@@ -33,7 +33,7 @@
                     <relocations>
                         <relocation>
                             <pattern>redis.clients</pattern>
-                            <shadedPattern>org.kwstudios.play.bungeelobby</shadedPattern>
+                            <shadedPattern>org.kwstudios.play.kwbungeelobby</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
