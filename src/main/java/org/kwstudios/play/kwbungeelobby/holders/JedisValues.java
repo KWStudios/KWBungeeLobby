@@ -7,6 +7,7 @@ public class JedisValues {
 	private String password;
 	private String[] channelsToListen;
 	private String channelToSend;
+	private String minigameCreationChannel;
 
 	public String getHost() {
 		return host;
@@ -46,6 +47,14 @@ public class JedisValues {
 
 	public void setChannelToSend(String channelToSend) {
 		this.channelToSend = channelToSend;
+	}
+
+	public String getMinigameCreationChannel() {
+		return minigameCreationChannel;
+	}
+
+	public void setMinigameCreationChannel(String minigameCreationChannel) {
+		this.minigameCreationChannel = minigameCreationChannel;
 	}
 
 }

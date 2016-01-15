@@ -129,6 +129,10 @@ public class PluginLoader extends JavaPlugin {
 		String channelToSend = ConfigFactory.getValueOrSetDefault("settings.jedis", "channelToSend", "minigame",
 				getConfig());
 		jedisValues.setChannelToSend(channelToSend);
+
+		String creationChannel = ConfigFactory.getValueOrSetDefault("settings.minigames.jedis", "creation-channel",
+				"minigame-server-creation", getConfig());
+		jedisValues.setMinigameCreationChannel(creationChannel);
 	}
 
 	private void setupJedisListener() {
