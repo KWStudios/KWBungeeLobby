@@ -1,6 +1,5 @@
 package org.kwstudios.play.kwbungeelobby.loader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,7 +19,6 @@ import org.kwstudios.play.kwbungeelobby.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
-import org.kwstudios.play.kwbungeelobby.toolbox.ValueChecker;
 
 import redis.clients.jedis.Protocol;
 
@@ -51,9 +49,8 @@ public class PluginLoader extends JavaPlugin {
 		SignConfiguration.initSignConfiguration();
 
 		// TODO Use BungeeCord messaging for Player-save actions
-		 this.getServer().getMessenger().registerOutgoingPluginChannel(this,
-		 "BungeeCord");
-		 new BungeeMessageListener();
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		new BungeeMessageListener();
 
 		// Jedis Listener Setup
 

@@ -202,7 +202,7 @@ public class SignCreator {
 		if (characterCount > 16) {
 			mapCropped = map.substring(0, map.length() - (characterCount - 16));
 		}
-		
+
 		String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME$", map)
 				.replace("$SIZE$", size).replace("$SLOTS$", slots);
 		return ChatColor.translateAlternateColorCodes('&', rawLine);

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public class SignData {
 	private static HashMap<Player, Sign> waitingPlayers = new HashMap<Player, Sign>();
 	private static HashMap<Sign, Integer> signPlayerCount = new HashMap<Sign, Integer>();
-	
+
 	public static HashMap<Player, Sign> getWaitingPlayers() {
 		return waitingPlayers;
 	}

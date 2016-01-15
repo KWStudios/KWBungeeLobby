@@ -21,19 +21,19 @@ public abstract class JedisMessageListener {
 		this.channel = channel;
 		jedisPubSub = setupSubscriber();
 	}
-	
+
 	public JedisMessageListener(String server, String password, String... channel) {
 		this(server, Protocol.DEFAULT_PORT, password, channel);
 	}
-	
-	public JedisMessageListener(String server, String[] channel){
+
+	public JedisMessageListener(String server, String[] channel) {
 		this(server, Protocol.DEFAULT_PORT, null, channel);
 	}
-	
-	public JedisMessageListener(String server, int port, String[] channel){
+
+	public JedisMessageListener(String server, int port, String[] channel) {
 		this(server, port, null, channel);
 	}
-	
+
 	public abstract void taskOnMessageReceive(String channel, String message);
 
 	private JedisPubSub setupSubscriber() {
