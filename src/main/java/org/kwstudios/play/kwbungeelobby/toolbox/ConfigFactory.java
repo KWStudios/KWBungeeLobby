@@ -55,8 +55,14 @@ public class ConfigFactory {
 	}
 
 	public static Set<String> getKeysUnderPath(String path, boolean deep, FileConfiguration fileConfiguration) {
-		Set<String> keys = fileConfiguration.getConfigurationSection(path).getKeys(deep);
-		return keys;
+		if(fileConfiguration != null) {
+			if(fileConfiguration.getConfigurationSection(path) != null) {
+				Set<String> keys = fileConfiguration.getConfigurationSection(path).getKeys(deep);
+				return keys;			
+			}			
+		}
+
+		return null;
 	}
 
 	public static String getValueOrSetDefault(String path, String key, String defaultValue,
