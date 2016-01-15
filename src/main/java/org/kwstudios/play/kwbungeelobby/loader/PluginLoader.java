@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,11 +14,8 @@ import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
 import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
-import org.kwstudios.play.kwbungeelobby.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
-import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
-
 import redis.clients.jedis.Protocol;
 
 public class PluginLoader extends JavaPlugin {
@@ -59,18 +55,6 @@ public class PluginLoader extends JavaPlugin {
 		setupJedisListener();
 
 		reloadSignConfig();
-
-		final String password = ConfigFactory.getString("config", "password", getConfig());
-
-		Bukkit.getServer().getScheduler().runTaskLater(this, new Runnable() {
-
-			@Override
-			public void run() {
-				JedisMessageSender.sendMessageToChannel(ConstantHolder.JEDIS_SERVER, password, "lobby",
-						"This is the first Jedis Test!!!");
-
-			}
-		}, 100);
 
 		saveConfig();
 	}
