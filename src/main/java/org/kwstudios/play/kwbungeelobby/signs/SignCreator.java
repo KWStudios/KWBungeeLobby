@@ -192,9 +192,9 @@ public class SignCreator {
 
 		String status;
 		if (currentPlayers >= maxPlayers) {
-			status = "[" + ChatColor.GOLD + "Lobby" + "]";
+			status = "[" + ChatColor.GOLD + "Lobby" + ChatColor.RESET + "]";
 		} else {
-			status = "[" + ChatColor.GREEN + "Lobby" + "]";
+			status = "[" + ChatColor.GREEN + "Lobby" + ChatColor.RESET + "]";
 		}
 
 		String mapCropped;
@@ -267,33 +267,33 @@ public class SignCreator {
 
 		return "";
 	}
-	
+
 	public static boolean setSignRestrictionValue(Sign sign, String value) {
-		if(!isJoinSign(sign))
-		return false;
+		if (!isJoinSign(sign))
+			return false;
 
 		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
-		
+
 		int x = sign.getX();
 		int y = sign.getY();
 		int z = sign.getZ();
 		String world = sign.getWorld().getName();
 		String path = "signs." + Integer.toString(x) + Integer.toString(y) + Integer.toString(z) + world;
-		
+
 		ConfigFactory.setString(path, "restriction", value, fileConfiguration);
 		return true;
 	}
-	
+
 	public static String getSignRestrictionValue(Sign sign) {
 		String value;
 		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
-		
+
 		int x = sign.getX();
 		int y = sign.getY();
 		int z = sign.getZ();
 		String world = sign.getWorld().getName();
 		String path = "signs." + Integer.toString(x) + Integer.toString(y) + Integer.toString(z) + world;
-		
+
 		value = ConfigFactory.getString(path, "restriction", fileConfiguration);
 		return value;
 	}
