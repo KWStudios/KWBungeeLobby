@@ -29,6 +29,8 @@ public class PluginLoader extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		super.onEnable();
+		
+		this.saveDefaultConfig();
 
 		PluginLoader.instance = this;
 

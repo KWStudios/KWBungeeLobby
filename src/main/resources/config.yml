@@ -1,1 +1,37 @@
 # Default Configuration, if you have any problems, please read the leaflet or ask your doctor or pharmacist.
+
+settings:
+  jedis:
+    host: localhost
+    port: 6379
+    password: password
+    channelsToListen:
+    - minigame
+    channelToSend: lobby
+  minigames:
+    jedis:
+      creation-channel: minigame-server-creation
+    local-servers:
+      lower: 1
+      upper: 4
+      exclude:
+      - 3
+      include:
+      - 5
+    command: ruby test.rb
+  signs:
+    first-line: $$
+    second-line: $STATUS$
+    third-line: $MAP_NAME$ $SIZE$
+    fourth-line: $SLOTS$
+  maps:
+    Bedwars_1:
+      teams: 4
+      players-per-team: 4
+      type: bedwars
+  database:
+    url: localhost
+    port: 3306
+    db: database
+    user: username
+    password: password
