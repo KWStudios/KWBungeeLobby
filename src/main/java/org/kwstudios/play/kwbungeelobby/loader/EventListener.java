@@ -49,29 +49,60 @@ public final class EventListener implements Listener {
 								System.out.println("He has the permission!");
 								if (SignData.getWaitingPlayers().containsKey(player)) {
 									// TODO Fancy colors! ~~~~
-									player.sendMessage("You are already waiting for server!");
+									player.sendMessage("You are already waiting for a server!");
 									return;
 								}
 
 								HashMap<String, MinigameServerHolder> severHolders = PluginLoader.getServerHolders();
 								boolean hasRequest = false;
+								boolean isConnected = false;
 								MinigameServer requestedServer = null;
 								for (Entry<String, MinigameServerHolder> serverHolder : severHolders.entrySet()) {
 									MinigameServer server = serverHolder.getValue().getActiveServerForSign(sign);
 									if (server != null) {
-										hasRequest = true;
+										isConnected = true;
 										requestedServer = server;
 										break;
 									}
+									hasRequest = MinigameRequests.isQueuedForRequest(sign);
 								}
 								// If there is no request, a new Request will be
 								// made
-								if (!hasRequest) {
+
+								if (isConnected) {
+									// Server is connected. Send player there if
+									// the server isn't full.
+									if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
+											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
+													"teams", 1, PluginLoader.getInstance().getConfig()) * ConfigFactory
+											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
+													"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
+										ByteArrayDataOutput out = ByteStreams.newDataOutput();
+										out.writeUTF("Connect");
+										out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
+										player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
+												out.toByteArray());
+									} else {
+										// TODO Fancy colors! ~~~~
+										player.sendMessage("This server is full!");
+									}
+								} else if (!hasRequest) {
+									// Server is not connected and has not been
+									// requested yet.
 									System.out.println("Everything set up!");
 									MinigameRequests.createRequest(MinigameType.fromString(ConfigFactory
 											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
 													"type", "bedwars", fileConfiguration)), sign);
 
+									if (SignData.getSignPlayerCount().containsKey(sign)) {
+										SignData.getSignPlayerCount().remove(sign);
+										SignData.getSignPlayerCount().put(sign, 1);
+										SignData.getWaitingPlayers().put(player, sign);
+										// TODO Fancy colors! ~~~~
+										player.sendMessage("~Starting the server. -- Please wait a few seconds.");
+									}
+								} else {
+									// A Request was already made
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
 										int i = SignData.getSignPlayerCount().get(sign);
 										if (i >= (ConfigFactory.getValueOrSetDefault(
@@ -90,24 +121,6 @@ public final class EventListener implements Listener {
 											// TODO Fancy colors! ~~~~
 											player.sendMessage("Starting the server. -- Please wait a few seconds.");
 										}
-
-									} else
-										SignData.getSignPlayerCount().put(sign, 1);
-								} else {
-									// A Request was already made
-									if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
-											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
-													"teams", 1, PluginLoader.getInstance().getConfig()) * ConfigFactory
-											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
-													"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
-										ByteArrayDataOutput out = ByteStreams.newDataOutput();
-										out.writeUTF("Connect");
-										out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
-										player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
-												out.toByteArray());
-									} else {
-										// TODO Fancy colors! ~~~~
-										player.sendMessage("This server is full!");
 									}
 								}
 							} else {
