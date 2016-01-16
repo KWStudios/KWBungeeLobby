@@ -128,6 +128,7 @@ public class PluginLoader extends JavaPlugin {
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
 			@Override
 			public synchronized void taskOnMessageReceive(String channel, String message) {
+				System.out.println("taskOnMessageReceive is being called!");
 				if (PluginLoader.getServerHolders().containsKey(channel)) {
 					PluginLoader.getServerHolders().get(channel).parseMessage(message);
 				} else {

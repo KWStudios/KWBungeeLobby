@@ -24,6 +24,7 @@ public class MinigameServerHolder {
 	}
 
 	public synchronized void parseMessage(String message) {
+		System.out.println("parseMessage is being called!");
 		Gson gson = new Gson();
 		MiniGameResponse miniGameResponse = gson.fromJson(message, MiniGameResponse.class);
 
@@ -37,9 +38,11 @@ public class MinigameServerHolder {
 			}
 		} else {
 			if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.CREATE) {
+				System.out.println("The Action is Create!");
 				Sign miniGameSign = MinigameRequests
 						.getQueuedSignForType(MinigameType.fromString(miniGameResponse.getGameType()));
 				if (miniGameSign != null) {
+					System.out.println("There was a waiting server!");
 					MinigameServer server = new MinigameServer(miniGameResponse, miniGameSign,
 							System.currentTimeMillis());
 					for (Entry<Player, Sign> player : SignData.getWaitingPlayers().entrySet()) {
