@@ -44,13 +44,12 @@ public final class EventListener implements Listener {
 					if (SignCreator.isJoinSign(sign)) {
 						Player player = event.getPlayer();
 						if (player.hasPermission("kwbungee.sign.use")) {
-							if (player
-									.hasPermission("kwbungee.sign.use." + SignCreator.getSignRestrictionValue(sign))) {
+							if (player.hasPermission("kwbungee.sign.use." + SignCreator.getSignRestrictionValue(sign))
+									|| (SignCreator.getSignRestrictionValue(sign) == null)) {
 								System.out.println("He has the permission!");
 								if (SignData.getWaitingPlayers().containsKey(player)) {
-									// TODO Tell the Player he is already
-									// waiting
-									// for a game.
+									// TODO Fancy colors! ~~~~
+									player.sendMessage("You are already waiting for server!");
 									return;
 								}
 
@@ -71,39 +70,35 @@ public final class EventListener implements Listener {
 									System.out.println("Everything set up!");
 									MinigameRequests.createRequest(MinigameType.fromString(ConfigFactory
 											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
-													"type", "bedwars", fileConfiguration)),
-											sign);
+													"type", "bedwars", fileConfiguration)), sign);
 
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
 										int i = SignData.getSignPlayerCount().get(sign);
 										if (i >= (ConfigFactory.getValueOrSetDefault(
 												"settings.maps." + SignCreator.getMapFromSign(sign), "teams", 1,
-												PluginLoader.getInstance().getConfig())
-												* ConfigFactory.getValueOrSetDefault(
+												PluginLoader.getInstance().getConfig()) * ConfigFactory
+												.getValueOrSetDefault(
 														"settings.maps." + SignCreator.getMapFromSign(sign),
-														"players-per-team", 1,
-														PluginLoader.getInstance().getConfig()))) {
-											// TODO Tell the player that the
-											// Server is full.
+														"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
+											// TODO Fancy colors! ~~~~
+											player.sendMessage("This server is full!");
 										} else {
 											i++;
 											SignData.getSignPlayerCount().remove(sign);
 											SignData.getSignPlayerCount().put(sign, i);
 											SignData.getWaitingPlayers().put(player, sign);
-											// TODO Tell the Player that the
-											// server is starting.
+											// TODO Fancy colors! ~~~~
+											player.sendMessage("Starting the server. -- Please wait a few seconds.");
 										}
 
 									} else
 										SignData.getSignPlayerCount().put(sign, 1);
 								} else {
 									// A Request was already made
-									if (requestedServer.getMiniGameResponse()
-											.getCurrentPlayers() <= (ConfigFactory.getValueOrSetDefault(
-													"settings.maps." + SignCreator.getMapFromSign(sign), "teams", 1,
-													PluginLoader.getInstance().getConfig())
-											* ConfigFactory.getValueOrSetDefault(
-													"settings.maps." + SignCreator.getMapFromSign(sign),
+									if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
+											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
+													"teams", 1, PluginLoader.getInstance().getConfig()) * ConfigFactory
+											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
 													"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
 										ByteArrayDataOutput out = ByteStreams.newDataOutput();
 										out.writeUTF("Connect");
@@ -111,19 +106,18 @@ public final class EventListener implements Listener {
 										player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
 												out.toByteArray());
 									} else {
-										// TODO Tell the player the server
-										// is
-										// full.
+										// TODO Fancy colors! ~~~~
+										player.sendMessage("This server is full!");
 									}
 								}
 							} else {
-								// TODO Tell the player he has insufficient
-								// permissions
+								// TODO Fancy colors! ~~~~
+								player.sendMessage("You don't have the required permissions to use this sign!");
 							}
 
 						} else {
-							// TODO Tell the player he has insufficient
-							// permissions
+							// TODO Fancy colors! ~~~~
+							player.sendMessage("You don't have the required permissions to use this sign!");
 						}
 					}
 				}
