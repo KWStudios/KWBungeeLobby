@@ -1,6 +1,8 @@
 package org.kwstudios.play.kwbungeelobby.loader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.block.Sign;
@@ -96,11 +98,21 @@ public final class EventListener implements Listener {
 
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
 										SignData.getSignPlayerCount().remove(sign);
-										SignData.getSignPlayerCount().put(sign, 1);
-										SignData.getWaitingPlayers().put(player, sign);
-										// TODO Fancy colors! ~~~~
-										player.sendMessage("~Starting the server. -- Please wait a few seconds.");
+										List<Player> toDelete = new ArrayList<Player>();
+										for(Entry<Player, Sign> playerOfWaitingPLayers : SignData.getWaitingPlayers().entrySet()) {
+											if(playerOfWaitingPLayers.getValue().equals(sign)) {
+												toDelete.add(playerOfWaitingPLayers.getKey());
+											}
+										}
+										for(Player del : toDelete) {
+											SignData.getWaitingPlayers().remove(del);
+										}
 									}
+									
+									SignData.getSignPlayerCount().put(sign, 1);
+									SignData.getWaitingPlayers().put(player, sign);
+									// TODO Fancy colors! ~~~~
+									player.sendMessage("~Starting the server. -- Please wait a few seconds.");
 								} else {
 									// A Request was already made
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
