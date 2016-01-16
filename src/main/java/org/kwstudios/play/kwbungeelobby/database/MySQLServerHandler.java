@@ -120,7 +120,7 @@ public class MySQLServerHandler {
 	 */
 	public static void reserveServer(String name) {
 		Statement statement = null;
-		String query = "UPDATE `minecraft_servers` SET `is_used` '1' WHERE `name` = '" + name + "';";
+		String query = "UPDATE `minecraft_servers` SET `is_used` = '1' WHERE `name` = '" + name + "';";
 		try {
 			statement = MySQLServerHandler.getConnection().createStatement();
 			statement.executeUpdate(query);
@@ -143,7 +143,7 @@ public class MySQLServerHandler {
 	 */
 	public static void releaseServer(String name) {
 		Statement statement = null;
-		String query = "UPDATE `minecraft_servers` SET `is_used` '0' WHERE `name` = '" + name + "';";
+		String query = "UPDATE `minecraft_servers` SET `is_used` = '0' WHERE `name` = '" + name + "';";
 		try {
 			statement = MySQLServerHandler.getConnection().createStatement();
 			statement.executeUpdate(query);
