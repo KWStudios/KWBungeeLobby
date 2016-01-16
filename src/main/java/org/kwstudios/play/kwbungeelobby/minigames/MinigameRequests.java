@@ -27,17 +27,21 @@ public class MinigameRequests {
 		if (queuedRequests.containsKey(sign)) {
 			return false;
 		}
+		System.out.println("It starts creating the request!");
 
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
 			public void run() {
+				System.out.println("It starts the asynchronous scheduler!");
 				MinecraftServerModel server = MySQLServerHandler.getAvailableServer();
 				if (server != null) {
 					if (MinigameRequests.isLocalServer(server)) {
+						System.out.println("It is a local server!");
 						String command = ConfigFactory.getValueOrSetDefault("settings.minigames", "command",
 								"ruby test.rb", PluginLoader.getInstance().getConfig());
+						String commands[] = command.trim().split("\\s+");
 
-						ProcessBuilder builder = new ProcessBuilder(command);
+						ProcessBuilder builder = new ProcessBuilder(commands);
 						Map<String, String> map = builder.environment();
 						map.put("GAME_TYPE", type.getText());
 						map.put("MAP_NAME", SignCreator.getMapFromSign(sign));

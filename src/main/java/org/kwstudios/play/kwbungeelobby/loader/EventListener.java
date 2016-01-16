@@ -50,6 +50,7 @@ public final class EventListener implements Listener {
 									.hasPermission("kwbungee.sign.use."
 											+ SignCreator
 													.getSignRestrictionValue(sign))) {
+								System.out.println("He has the permission!");
 								if (SignData.getWaitingPlayers().containsKey(
 										player)) {
 									// TODO Tell the Player he is already
@@ -66,6 +67,7 @@ public final class EventListener implements Listener {
 											.getValue().getActiveServerForSign(
 													sign);
 									if (server == null) {
+										System.out.println("Everything set up!");
 										MinigameRequests
 												.createRequest(
 														MinigameType
