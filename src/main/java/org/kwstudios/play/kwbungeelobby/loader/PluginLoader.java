@@ -139,8 +139,10 @@ public class PluginLoader extends JavaPlugin {
 
 	private void setupServerHolders() {
 		for (String channel : jedisValues.getChannelsToListen()) {
-			MinigameServerHolder holder = new MinigameServerHolder(channel);
-			PluginLoader.getServerHolders().put(channel, holder);
+			if (!PluginLoader.getServerHolders().containsKey(channel)) {
+				MinigameServerHolder holder = new MinigameServerHolder(channel);
+				PluginLoader.getServerHolders().put(channel, holder);
+			}
 		}
 	}
 
