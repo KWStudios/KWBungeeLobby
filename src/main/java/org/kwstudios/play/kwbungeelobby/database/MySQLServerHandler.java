@@ -59,9 +59,9 @@ public class MySQLServerHandler {
 
 	/**
 	 * Returns a pseudorandomly chosen MinecraftServerModel value which is
-	 * currently not in use. More formally, returns a Java object
-	 * representation of one random minecraft_server model for the globally set
-	 * database, where the column <i>is_used</i> == false.
+	 * currently not in use. More formally, returns a Java object representation
+	 * of one random minecraft_server model for the globally set database, where
+	 * the column <i>is_used</i> == false.
 	 * <p>
 	 * Before returning the instance of MinecraftServerModel, this method
 	 * reserves the chosen Server with {@link #reserveServer(String)}, which
@@ -100,11 +100,14 @@ public class MySQLServerHandler {
 			}
 		}
 
-		Random random = new Random();
-		MinecraftServerModel randomKey = availableServers.get(random.nextInt(availableServers.size()));
-		reserveServer(randomKey.getName());
+		if (!availableServers.isEmpty()) {
+			Random random = new Random();
+			MinecraftServerModel randomKey = availableServers.get(random.nextInt(availableServers.size()));
+			reserveServer(randomKey.getName());
 
-		return randomKey;
+			return randomKey;
+		}
+		return null;
 	}
 
 	/**
