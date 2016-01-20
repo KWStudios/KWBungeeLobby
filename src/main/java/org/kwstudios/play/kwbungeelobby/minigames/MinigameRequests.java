@@ -54,14 +54,54 @@ public class MinigameRequests {
 
 						queuedRequests.put(sign, type);
 					} else {
+						server.setType(type.getText());
+						server.setMap(SignCreator.getMapFromSign(sign));
 						Gson gson = new Gson();
 						String json = gson.toJson(server);
 						JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
 								PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
 								PluginLoader.getJedisValues().getMinigameCreationChannel(), json);
+						queuedRequests.put(sign, type);
 					}
 				} else {
 					// TODO No Servers available :-( Start self-destruction...
+				}
+			}
+		});
+
+		return true;
+	}
+
+	public static boolean startRequestedServer(String message) {
+		Gson gson = new Gson();
+		final MinecraftServerModel server;
+		try {
+			server = gson.fromJson(message, MinecraftServerModel.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("It starts the asynchronous scheduler!");
+				if (MinigameRequests.isLocalServer(server)) {
+					System.out.println("It is a local server!");
+					String command = ConfigFactory.getValueOrSetDefault("settings.minigames", "command", "ruby test.rb",
+							PluginLoader.getInstance().getConfig());
+					String commands[] = command.trim().split("\\s+");
+
+					ProcessBuilder builder = new ProcessBuilder(commands);
+					Map<String, String> map = builder.environment();
+					map.put("GAME_TYPE", server.getType());
+					map.put("MAP_NAME", server.getMap());
+					map.put("SERVER_NAME", server.getName());
+					try {
+						builder.start();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});

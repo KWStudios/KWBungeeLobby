@@ -4,6 +4,8 @@ public class MinecraftServerModel {
 
 	private String name;
 	private String server;
+	private String type;
+	private String map;
 
 	private int number;
 
@@ -23,6 +25,22 @@ public class MinecraftServerModel {
 
 	public String getServer() {
 		return server;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getMap() {
+		return map;
+	}
+
+	public void setMap(String map) {
+		this.map = map;
 	}
 
 	public int getNumber() {
