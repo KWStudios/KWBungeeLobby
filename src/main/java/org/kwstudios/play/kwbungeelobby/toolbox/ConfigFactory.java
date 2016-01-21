@@ -22,7 +22,8 @@ public class ConfigFactory {
 		return fileConfiguration.getBoolean(path + "." + key);
 	}
 
-	public static void setBoolean(String path, String key, Boolean value, FileConfiguration fileConfiguration) {
+	public synchronized static void setBoolean(String path, String key, Boolean value,
+			FileConfiguration fileConfiguration) {
 		fileConfiguration.set(path + "." + key, value);
 		// save();
 	}
@@ -31,7 +32,8 @@ public class ConfigFactory {
 		return fileConfiguration.getString(path + "." + key);
 	}
 
-	public static void setString(String path, String key, String value, FileConfiguration fileConfiguration) {
+	public synchronized static void setString(String path, String key, String value,
+			FileConfiguration fileConfiguration) {
 		fileConfiguration.set(path + "." + key, value);
 		// save();
 	}
@@ -40,7 +42,7 @@ public class ConfigFactory {
 		return fileConfiguration.getInt(path + "." + key);
 	}
 
-	public static void setInt(String path, String key, int value, FileConfiguration fileConfiguration) {
+	public synchronized static void setInt(String path, String key, int value, FileConfiguration fileConfiguration) {
 		fileConfiguration.set(path + "." + key, value);
 		// save();
 	}
@@ -49,17 +51,18 @@ public class ConfigFactory {
 		return fileConfiguration.getDouble(path + "." + key);
 	}
 
-	public static void setDouble(String path, String key, double value, FileConfiguration fileConfiguration) {
+	public synchronized static void setDouble(String path, String key, double value,
+			FileConfiguration fileConfiguration) {
 		fileConfiguration.set(path + "." + key, value);
 		// save();
 	}
 
 	public static Set<String> getKeysUnderPath(String path, boolean deep, FileConfiguration fileConfiguration) {
-		if(fileConfiguration != null) {
-			if(fileConfiguration.getConfigurationSection(path) != null) {
+		if (fileConfiguration != null) {
+			if (fileConfiguration.getConfigurationSection(path) != null) {
 				Set<String> keys = fileConfiguration.getConfigurationSection(path).getKeys(deep);
-				return keys;			
-			}			
+				return keys;
+			}
 		}
 
 		return null;
