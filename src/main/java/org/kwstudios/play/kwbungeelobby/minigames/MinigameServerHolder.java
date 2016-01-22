@@ -1,5 +1,6 @@
 package org.kwstudios.play.kwbungeelobby.minigames;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -26,7 +27,18 @@ public class MinigameServerHolder {
 	public synchronized void parseMessage(String message) {
 		System.out.println("parseMessage is being called!");
 		Gson gson = new Gson();
-		MiniGameResponse miniGameResponse = gson.fromJson(message, MiniGameResponse.class);
+		MiniGameResponse miniGameResponse;
+		try {
+			miniGameResponse = gson.fromJson(message, MiniGameResponse.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		if (miniGameResponse.getServerName() == null || miniGameResponse.getAction() == null
+				|| miniGameResponse.getGameType() == null) {
+			return;
+		}
 
 		if (connectedServers.containsKey(miniGameResponse.getServerName())) {
 			if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.REMOVE) {

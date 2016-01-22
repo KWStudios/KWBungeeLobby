@@ -13,6 +13,7 @@ import org.kwstudios.play.kwbungeelobby.commands.CommandParser;
 import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
 import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
+import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
@@ -29,7 +30,7 @@ public class PluginLoader extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		super.onEnable();
-		
+
 		this.saveDefaultConfig();
 
 		PluginLoader.instance = this;
@@ -124,17 +125,27 @@ public class PluginLoader extends JavaPlugin {
 	}
 
 	private void setupJedisListener() {
+		String[] channels = new String[jedisValues.getChannelsToListen().length + 1];
+		for (int i = 0; i < jedisValues.getChannelsToListen().length; i++) {
+			channels[i] = jedisValues.getChannelsToListen()[i];
+		}
+		channels[jedisValues.getChannelsToListen().length + 1] = jedisValues.getMinigameCreationChannel();
+
 		PluginLoader.lobbyChannelListener = new JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
 			@Override
 			public synchronized void taskOnMessageReceive(String channel, String message) {
 				System.out.println("taskOnMessageReceive is being called!");
-				if (PluginLoader.getServerHolders().containsKey(channel)) {
-					PluginLoader.getServerHolders().get(channel).parseMessage(message);
+				if (channel.equals(jedisValues.getMinigameCreationChannel())) {
+					MinigameRequests.startRequestedServer(message);
 				} else {
-					MinigameServerHolder parser = new MinigameServerHolder(channel);
-					parser.parseMessage(message);
-					PluginLoader.getServerHolders().put(channel, parser);
+					if (PluginLoader.getServerHolders().containsKey(channel)) {
+						PluginLoader.getServerHolders().get(channel).parseMessage(message);
+					} else {
+						MinigameServerHolder parser = new MinigameServerHolder(channel);
+						parser.parseMessage(message);
+						PluginLoader.getServerHolders().put(channel, parser);
+					}
 				}
 			}
 		};
