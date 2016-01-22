@@ -82,6 +82,10 @@ public class MinigameRequests {
 			return false;
 		}
 
+		if (server.getName() == null || server.getType() == null || server.getMap() == null) {
+			return false;
+		}
+
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
 			public void run() {
