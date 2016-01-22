@@ -129,7 +129,7 @@ public class PluginLoader extends JavaPlugin {
 		for (int i = 0; i < jedisValues.getChannelsToListen().length; i++) {
 			channels[i] = jedisValues.getChannelsToListen()[i];
 		}
-		channels[jedisValues.getChannelsToListen().length + 1] = jedisValues.getMinigameCreationChannel();
+		channels[jedisValues.getChannelsToListen().length] = jedisValues.getMinigameCreationChannel();
 
 		PluginLoader.lobbyChannelListener = new JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
