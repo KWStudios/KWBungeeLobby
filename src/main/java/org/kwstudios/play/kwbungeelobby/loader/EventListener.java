@@ -99,16 +99,17 @@ public final class EventListener implements Listener {
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
 										SignData.getSignPlayerCount().remove(sign);
 										List<Player> toDelete = new ArrayList<Player>();
-										for(Entry<Player, Sign> playerOfWaitingPLayers : SignData.getWaitingPlayers().entrySet()) {
-											if(playerOfWaitingPLayers.getValue().equals(sign)) {
+										for (Entry<Player, Sign> playerOfWaitingPLayers : SignData.getWaitingPlayers()
+												.entrySet()) {
+											if (playerOfWaitingPLayers.getValue().equals(sign)) {
 												toDelete.add(playerOfWaitingPLayers.getKey());
 											}
 										}
-										for(Player del : toDelete) {
+										for (Player del : toDelete) {
 											SignData.getWaitingPlayers().remove(del);
 										}
 									}
-									
+
 									SignData.getSignPlayerCount().put(sign, 1);
 									SignData.getWaitingPlayers().put(player, sign);
 									// TODO Fancy colors! ~~~~
@@ -171,8 +172,10 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
-		if (event.getBlock().getState() instanceof Sign && !event.isCancelled()) {
-			SignCreator.removeSign((Sign) event.getBlock().getState());
+		if (!event.isCancelled()) {
+			if (event.getBlock().getState() instanceof Sign && !event.isCancelled()) {
+				SignCreator.removeSign((Sign) event.getBlock().getState());
+			}
 		}
 	}
 
