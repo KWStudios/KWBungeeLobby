@@ -18,6 +18,9 @@ import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
 public class PluginLoader extends JavaPlugin {
@@ -27,6 +30,7 @@ public class PluginLoader extends JavaPlugin {
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
 	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
+	private static JedisPool jedisPool;
 
 	@Override
 	public void onEnable() {
@@ -57,6 +61,9 @@ public class PluginLoader extends JavaPlugin {
 		// Jedis Listener Setup
 
 		reloadJedisConfig();
+		
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+        jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
 
 		setupJedisListener();
 
@@ -73,6 +80,7 @@ public class PluginLoader extends JavaPlugin {
 
 		// Jedis stuff
 		lobbyChannelListener.getJedisPubSub().unsubscribe();
+		jedisPool.destroy();
 
 		PluginDescriptionFile pluginDescriptionFile = getDescription();
 		Logger logger = Logger.getLogger("Minecraft");
@@ -181,5 +189,10 @@ public class PluginLoader extends JavaPlugin {
 	public static PluginLoader getInstance() {
 		return PluginLoader.instance;
 	}
+	
+	public static JedisPool getJedisPool() {
+		return jedisPool;
+	}
+
 
 }
