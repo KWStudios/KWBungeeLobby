@@ -77,19 +77,39 @@ public final class EventListener implements Listener {
 								if (isConnected) {
 									// Server is connected. Send player there if
 									// the server isn't full.
-									if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
-											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
-													"teams", 1, PluginLoader.getInstance().getConfig()) * ConfigFactory
-											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
-													"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
-										ByteArrayDataOutput out = ByteStreams.newDataOutput();
-										out.writeUTF("Connect");
-										out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
-										player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
-												out.toByteArray());
+									if (ConfigFactory.getValueOrSetDefault(
+											"settings.maps." + SignCreator.getMapFromSign(sign), "isTeamGame", false,
+											PluginLoader.getInstance().getConfig())) {
+										if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
+												.getValueOrSetDefault(
+														"settings.maps." + SignCreator.getMapFromSign(sign), "teams",
+														1, PluginLoader.getInstance().getConfig()) * ConfigFactory
+												.getValueOrSetDefault(
+														"settings.maps." + SignCreator.getMapFromSign(sign),
+														"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
+											ByteArrayDataOutput out = ByteStreams.newDataOutput();
+											out.writeUTF("Connect");
+											out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
+											player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
+													out.toByteArray());
+										} else {
+											// TODO Fancy colors! ~~~~
+											player.sendMessage("This server is full!");
+										}
 									} else {
-										// TODO Fancy colors! ~~~~
-										player.sendMessage("This server is full!");
+										if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
+												.getValueOrSetDefault(
+														"settings.maps." + SignCreator.getMapFromSign(sign), "max_players",
+														1, PluginLoader.getInstance().getConfig()))) {
+											ByteArrayDataOutput out = ByteStreams.newDataOutput();
+											out.writeUTF("Connect");
+											out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
+											player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
+													out.toByteArray());
+										} else {
+											// TODO Fancy colors! ~~~~
+											player.sendMessage("This server is full!");
+										}
 									}
 								} else if (!hasRequest) {
 									// Server is not connected and has not been
