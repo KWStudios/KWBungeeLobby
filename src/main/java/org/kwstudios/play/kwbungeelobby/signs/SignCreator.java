@@ -90,15 +90,13 @@ public class SignCreator {
 					ConfigFactory.getString("settings.signs", "first-line", PluginLoader.getInstance().getConfig()), 0);
 
 			String second = getLineFormatted(map,
-					ConfigFactory.getString("settings.signs", "second-line", PluginLoader.getInstance().getConfig()),
-					0);
+					ConfigFactory.getString("settings.signs", "second-line", PluginLoader.getInstance().getConfig()), 0);
 
 			String third = getLineFormatted(map,
 					ConfigFactory.getString("settings.signs", "third-line", PluginLoader.getInstance().getConfig()), 0);
 
 			String fourth = getLineFormatted(map,
-					ConfigFactory.getString("settings.signs", "fourth-line", PluginLoader.getInstance().getConfig()),
-					0);
+					ConfigFactory.getString("settings.signs", "fourth-line", PluginLoader.getInstance().getConfig()), 0);
 
 			if (!first.isEmpty()) {
 				sign.setLine(0, first);
@@ -177,24 +175,24 @@ public class SignCreator {
 		if (line.isEmpty()) {
 			return "";
 		}
-		
+
 		boolean isTeamGame = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "isTeamGame", false,
 				PluginLoader.getInstance().getConfig());
-		
+
 		if (isTeamGame) {
-			String size = Integer
-					.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
-							PluginLoader.getInstance().getConfig()))
-					+ "x" + Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team",
+			String size = Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
+					PluginLoader.getInstance().getConfig()))
+					+ "x"
+					+ Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team",
 							1, PluginLoader.getInstance().getConfig()));
-			
-			int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
-					PluginLoader.getInstance().getConfig())
-					* ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team", 1,
-							PluginLoader.getInstance().getConfig());
-			
+
+			int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1, PluginLoader
+					.getInstance().getConfig())
+					* ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team", 1, PluginLoader
+							.getInstance().getConfig());
+
 			String slots = Integer.toString(currentPlayers) + "/" + Integer.toString(maxPlayers);
-			
+
 			String status;
 			if (currentPlayers >= maxPlayers) {
 				status = "[" + ChatColor.GOLD + "Lobby" + ChatColor.RESET + "]";
@@ -212,15 +210,15 @@ public class SignCreator {
 			String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME$", map)
 					.replace("$SIZE$", size).replace("$SLOTS$", slots);
 			return ChatColor.translateAlternateColorCodes('&', rawLine);
-			
-		} else {		
-			int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "max_players", 1,
-							PluginLoader.getInstance().getConfig());
-			
+
+		} else {
+			int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "max_players", 1, PluginLoader
+					.getInstance().getConfig());
+
 			String size = Integer.toString(maxPlayers);
-			
+
 			String slots = Integer.toString(currentPlayers) + "/" + size;
-			
+
 			String status;
 			if (currentPlayers >= maxPlayers) {
 				status = "[" + ChatColor.GOLD + "Lobby" + ChatColor.RESET + "]";
@@ -234,14 +232,11 @@ public class SignCreator {
 				mapCropped = map.substring(0, map.length() - (characterCount - 16));
 				map = mapCropped;
 			}
-			
+
 			String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME$", map)
 					.replace("$SIZE$", size).replace("$SLOTS$", slots);
 			return ChatColor.translateAlternateColorCodes('&', rawLine);
 		}
-
-	
-
 
 	}
 
@@ -333,6 +328,27 @@ public class SignCreator {
 
 		value = ConfigFactory.getString(path, "restriction", fileConfiguration);
 		return value;
+	}
+
+	public static void resetAllSigns() {
+		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
+
+		Set<String> allSigns = ConfigFactory.getKeysUnderPath("signs", false, fileConfiguration);
+		if (allSigns != null) {
+			for (String signString : allSigns) {
+				String path = "signs." + signString;
+				int x = ConfigFactory.getInt(path, "x", fileConfiguration);
+				int y = ConfigFactory.getInt(path, "y", fileConfiguration);
+				int z = ConfigFactory.getInt(path, "z", fileConfiguration);
+				String world = ConfigFactory.getString(path, "world", fileConfiguration);
+				Location signLocation = new Location(Bukkit.getWorld(world), x, y, z);
+				if (signLocation.getBlock().getState() instanceof Sign) {
+					Sign sign = (Sign) signLocation.getBlock().getState();
+					updateSign(sign, 0);
+				}
+			}
+		}
+
 	}
 
 }

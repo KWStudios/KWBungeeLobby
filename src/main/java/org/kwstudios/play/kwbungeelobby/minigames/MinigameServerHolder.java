@@ -42,9 +42,9 @@ public class MinigameServerHolder {
 
 		if (connectedServers.containsKey(miniGameResponse.getServerName())) {
 			if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.REMOVE) {
-				connectedServers.remove(miniGameResponse.getServerName());
 				// TODO Create method to reset the sign
 				SignCreator.updateSign(connectedServers.get(miniGameResponse.getServerName()).getMiniGameSign(), 0);
+				connectedServers.remove(miniGameResponse.getServerName());
 			} else if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.UPDATE) {
 				SignCreator.updateSign(connectedServers.get(miniGameResponse.getServerName()).getMiniGameSign(),
 						miniGameResponse.getCurrentPlayers());
@@ -55,6 +55,10 @@ public class MinigameServerHolder {
 				Sign miniGameSign = MinigameRequests.getQueuedSignForType(MinigameType.fromString(miniGameResponse
 						.getGameType()));
 				if (miniGameSign != null) {
+					if(SignData.getRunningSignTimeouts().containsKey(miniGameSign)) {
+						SignData.getRunningSignTimeouts().get(miniGameSign).cancel();
+						SignData.getRunningSignTimeouts().remove(miniGameSign);
+					}
 					System.out.println("There was a waiting server!");
 					MinigameServer server = new MinigameServer(miniGameResponse, miniGameSign,
 							System.currentTimeMillis());

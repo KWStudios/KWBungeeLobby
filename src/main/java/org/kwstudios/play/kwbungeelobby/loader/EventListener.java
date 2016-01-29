@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.libs.jline.internal.ShutdownHooks.Task;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,6 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeelobby.minigames.GetMaps;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServer;
@@ -115,7 +117,7 @@ public final class EventListener implements Listener {
 									SignData.getWaitingPlayers().put(player, sign);
 									// TODO Fancy colors! ~~~~
 									player.sendMessage("~Starting the server. -- Please wait a few seconds.");
-									Bukkit.getServer().getScheduler()
+									BukkitTask timeout = Bukkit.getServer().getScheduler()
 											.runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
 
 												@Override
@@ -142,6 +144,7 @@ public final class EventListener implements Listener {
 												}
 
 											}, 600);
+									SignData.getRunningSignTimeouts().put(sign, timeout);
 								} else {
 									// A Request was already made
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
