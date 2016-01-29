@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.core.net.Priority;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -214,6 +215,7 @@ public final class EventListener implements Listener {
 						SignCreator.createNewSign(sign, map);
 						if (!event.getLine(3).trim().equalsIgnoreCase(""))
 							SignCreator.setSignRestrictionValue(sign, event.getLine(3).trim());
+						PluginLoader.getInstance().saveConfig();
 						SignCreator.resetSign(event);
 					}
 				}
@@ -221,7 +223,7 @@ public final class EventListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (!event.isCancelled()) {
 			if (event.getBlock().getState() instanceof Sign && !event.isCancelled()) {
