@@ -28,12 +28,17 @@
 					<artifactSet>
 						<includes>
 							<include>redis.clients:*</include>
+							<include>org.apache.commons:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
 						<relocation>
 							<pattern>redis.clients</pattern>
 							<shadedPattern>org.kwstudios.play.kwbungeelobby</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>org.apache.commons</pattern>
+							<shadedPattern>org.kwstudios.play.kwbungeeminigame</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -104,6 +109,13 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.36</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.4.2</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
