@@ -28,6 +28,7 @@ public class MinigameRequests {
 			return false;
 		}
 		System.out.println("It starts creating the request!");
+		queuedRequests.put(sign, type);
 
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
@@ -52,16 +53,15 @@ public class MinigameRequests {
 							e.printStackTrace();
 						}
 
-						queuedRequests.put(sign, type);
 					} else {
 						server.setType(type.getText());
 						server.setMap(SignCreator.getMapFromSign(sign));
 						Gson gson = new Gson();
 						String json = gson.toJson(server);
-						JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
-								PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
-								PluginLoader.getJedisValues().getMinigameCreationChannel(), json);
-						queuedRequests.put(sign, type);
+						JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(), PluginLoader
+								.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(), PluginLoader
+								.getJedisValues().getMinigameCreationChannel(), json);
+
 					}
 				} else {
 					// TODO No Servers available :-( Start self-destruction...
@@ -92,8 +92,8 @@ public class MinigameRequests {
 				System.out.println("It starts the asynchronous scheduler!");
 				if (MinigameRequests.isLocalServer(server)) {
 					System.out.println("It is a local server!");
-					String command = ConfigFactory.getValueOrSetDefault("settings.minigames", "command", "ruby test.rb",
-							PluginLoader.getInstance().getConfig());
+					String command = ConfigFactory.getValueOrSetDefault("settings.minigames", "command",
+							"ruby test.rb", PluginLoader.getInstance().getConfig());
 					String commands[] = command.trim().split("\\s+");
 
 					ProcessBuilder builder = new ProcessBuilder(commands);
@@ -148,8 +148,8 @@ public class MinigameRequests {
 	/**
 	 * Returns true if the given MinecraftServerModel is a local server. More
 	 * formally, returns true iff the Range r, which is a closed Range for the
-	 * <i>lower</i> and <i>upper</i> values ({@code [lower..upper]} {@code {x
-	 * |lower <= x <= upper}}) which should be set in the config.yml contains
+	 * <i>lower</i> and <i>upper</i> values ({@code [lower..upper]} {@code x
+	 * |lower <= x <= upper} ) which should be set in the config.yml contains
 	 * the Integer {@code server.getNumber()} n AND was not excluded in the
 	 * {@code Set} e which should be set in the config.yml OR was included in
 	 * the {@code Set} i which should also be set in the config.yml such that:
@@ -160,15 +160,15 @@ public class MinigameRequests {
 	 * @return
 	 */
 	public static boolean isLocalServer(MinecraftServerModel server) {
-		int lower = ConfigFactory.getValueOrSetDefault("settings.minigames.local-servers", "lower", 1,
-				PluginLoader.getInstance().getConfig());
-		int upper = ConfigFactory.getValueOrSetDefault("settings.minigames.local-servers", "upper", 1,
-				PluginLoader.getInstance().getConfig());
+		int lower = ConfigFactory.getValueOrSetDefault("settings.minigames.local-servers", "lower", 1, PluginLoader
+				.getInstance().getConfig());
+		int upper = ConfigFactory.getValueOrSetDefault("settings.minigames.local-servers", "upper", 1, PluginLoader
+				.getInstance().getConfig());
 
-		Set<Integer> exclude = ImmutableSet.copyOf(
-				PluginLoader.getInstance().getConfig().getIntegerList("settings.minigames.local-servers.exclude"));
-		Set<Integer> include = ImmutableSet.copyOf(
-				PluginLoader.getInstance().getConfig().getIntegerList("settings.minigames.local-servers.include"));
+		Set<Integer> exclude = ImmutableSet.copyOf(PluginLoader.getInstance().getConfig()
+				.getIntegerList("settings.minigames.local-servers.exclude"));
+		Set<Integer> include = ImmutableSet.copyOf(PluginLoader.getInstance().getConfig()
+				.getIntegerList("settings.minigames.local-servers.include"));
 
 		Range<Integer> range = Range.closed(lower, upper);
 
