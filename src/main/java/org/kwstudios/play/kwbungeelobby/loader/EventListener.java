@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ public final class EventListener implements Listener {
 		if (event.getClickedBlock() != null && event.getClickedBlock().getState() != null) {
 			if (event.getClickedBlock().getState() instanceof Sign) {
 				if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-					Sign sign = (Sign) event.getClickedBlock().getState();
+					final Sign sign = (Sign) event.getClickedBlock().getState();
 					if (SignCreator.isJoinSign(sign)) {
 						Player player = event.getPlayer();
 						if (player.hasPermission("kwbungee.sign.use")) {
@@ -114,6 +115,33 @@ public final class EventListener implements Listener {
 									SignData.getWaitingPlayers().put(player, sign);
 									// TODO Fancy colors! ~~~~
 									player.sendMessage("~Starting the server. -- Please wait a few seconds.");
+									Bukkit.getServer().getScheduler()
+											.runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
+
+												@Override
+												public void run() {
+													MinigameRequests.removeQueuedRequest(sign);
+													SignCreator.updateSign(sign, 0);
+													if (SignData.getSignPlayerCount().containsKey(sign)) {
+														SignData.getSignPlayerCount().remove(sign);
+														List<Player> toDelete = new ArrayList<Player>();
+														for (Entry<Player, Sign> playerOfWaitingPLayers : SignData
+																.getWaitingPlayers().entrySet()) {
+															if (playerOfWaitingPLayers.getValue().equals(sign)) {
+																toDelete.add(playerOfWaitingPLayers.getKey());
+															}
+														}
+														for (Player del : toDelete) {
+															SignData.getWaitingPlayers().remove(del);
+															// TODO Fancy
+															// colors! ~~~~
+															del.sendMessage("The Server you were waiting for timed out.");
+															del.sendMessage("You can now join another game.");
+														}
+													}
+												}
+
+											}, 600);
 								} else {
 									// A Request was already made
 									if (SignData.getSignPlayerCount().containsKey(sign)) {

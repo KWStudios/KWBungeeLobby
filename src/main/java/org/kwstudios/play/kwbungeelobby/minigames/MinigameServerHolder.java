@@ -44,6 +44,7 @@ public class MinigameServerHolder {
 			if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.REMOVE) {
 				connectedServers.remove(miniGameResponse.getServerName());
 				// TODO Create method to reset the sign
+				SignCreator.updateSign(connectedServers.get(miniGameResponse.getServerName()).getMiniGameSign(), 0);
 			} else if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.UPDATE) {
 				SignCreator.updateSign(connectedServers.get(miniGameResponse.getServerName()).getMiniGameSign(),
 						miniGameResponse.getCurrentPlayers());
@@ -51,17 +52,17 @@ public class MinigameServerHolder {
 		} else {
 			if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.CREATE) {
 				System.out.println("The Action is Create!");
-				Sign miniGameSign = MinigameRequests
-						.getQueuedSignForType(MinigameType.fromString(miniGameResponse.getGameType()));
+				Sign miniGameSign = MinigameRequests.getQueuedSignForType(MinigameType.fromString(miniGameResponse
+						.getGameType()));
 				if (miniGameSign != null) {
 					System.out.println("There was a waiting server!");
 					MinigameServer server = new MinigameServer(miniGameResponse, miniGameSign,
 							System.currentTimeMillis());
+					ByteArrayDataOutput out = ByteStreams.newDataOutput();
+					out.writeUTF("Connect");
+					out.writeUTF(server.getMiniGameResponse().getServerName());
 					for (Entry<Player, Sign> player : SignData.getWaitingPlayers().entrySet()) {
 						if (player.getValue().equals(miniGameSign)) {
-							ByteArrayDataOutput out = ByteStreams.newDataOutput();
-							out.writeUTF("Connect");
-							out.writeUTF(server.getMiniGameResponse().getServerName());
 							player.getKey().sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
 									out.toByteArray());
 						}

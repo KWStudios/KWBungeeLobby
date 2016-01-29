@@ -177,35 +177,72 @@ public class SignCreator {
 		if (line.isEmpty()) {
 			return "";
 		}
+		
+		boolean isTeamGame = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "isTeamGame", false,
+				PluginLoader.getInstance().getConfig());
+		
+		if (isTeamGame) {
+			String size = Integer
+					.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
+							PluginLoader.getInstance().getConfig()))
+					+ "x" + Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team",
+							1, PluginLoader.getInstance().getConfig()));
+			
+			int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
+					PluginLoader.getInstance().getConfig())
+					* ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team", 1,
+							PluginLoader.getInstance().getConfig());
+			
+			String slots = Integer.toString(currentPlayers) + "/" + Integer.toString(maxPlayers);
+			
+			String status;
+			if (currentPlayers >= maxPlayers) {
+				status = "[" + ChatColor.GOLD + "Lobby" + ChatColor.RESET + "]";
+			} else {
+				status = "[" + ChatColor.GREEN + "Lobby" + ChatColor.RESET + "]";
+			}
 
-		String size = Integer
-				.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
-						PluginLoader.getInstance().getConfig()))
-				+ "x" + Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team",
-						1, PluginLoader.getInstance().getConfig()));
+			String mapCropped;
+			int characterCount = map.length() + " ".length() + size.length();
+			if (characterCount > 16) {
+				mapCropped = map.substring(0, map.length() - (characterCount - 16));
+				map = mapCropped;
+			}
 
-		int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
-				PluginLoader.getInstance().getConfig())
-				* ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team", 1,
-						PluginLoader.getInstance().getConfig());
-		String slots = Integer.toString(currentPlayers) + "/" + Integer.toString(maxPlayers);
+			String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME$", map)
+					.replace("$SIZE$", size).replace("$SLOTS$", slots);
+			return ChatColor.translateAlternateColorCodes('&', rawLine);
+			
+		} else {		
+			int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "max_players", 1,
+							PluginLoader.getInstance().getConfig());
+			
+			String size = Integer.toString(maxPlayers);
+			
+			String slots = Integer.toString(currentPlayers) + "/" + size;
+			
+			String status;
+			if (currentPlayers >= maxPlayers) {
+				status = "[" + ChatColor.GOLD + "Lobby" + ChatColor.RESET + "]";
+			} else {
+				status = "[" + ChatColor.GREEN + "Lobby" + ChatColor.RESET + "]";
+			}
 
-		String status;
-		if (currentPlayers >= maxPlayers) {
-			status = "[" + ChatColor.GOLD + "Lobby" + ChatColor.RESET + "]";
-		} else {
-			status = "[" + ChatColor.GREEN + "Lobby" + ChatColor.RESET + "]";
+			String mapCropped;
+			int characterCount = map.length() + " ".length() + size.length();
+			if (characterCount > 16) {
+				mapCropped = map.substring(0, map.length() - (characterCount - 16));
+				map = mapCropped;
+			}
+			
+			String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME$", map)
+					.replace("$SIZE$", size).replace("$SLOTS$", slots);
+			return ChatColor.translateAlternateColorCodes('&', rawLine);
 		}
 
-		String mapCropped;
-		int characterCount = map.length() + " ".length() + size.length();
-		if (characterCount > 16) {
-			mapCropped = map.substring(0, map.length() - (characterCount - 16));
-		}
+	
 
-		String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME$", map)
-				.replace("$SIZE$", size).replace("$SLOTS$", slots);
-		return ChatColor.translateAlternateColorCodes('&', rawLine);
+
 	}
 
 	/**
