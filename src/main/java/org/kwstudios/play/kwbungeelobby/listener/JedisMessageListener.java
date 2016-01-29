@@ -79,9 +79,9 @@ public abstract class JedisMessageListener {
 				try {
 					Bukkit.getConsoleSender().sendMessage("Jedis is connecting to the Redis Host!");
 					Jedis jedis = PluginLoader.getJedisPool().getResource();
-					if (password != null) {
+					/*if (password != null) {
 						jedis.auth(password);
-					}
+					}*/
 					Bukkit.getConsoleSender().sendMessage("Jedis is subscribing for a channel at the Redis Host!");
 					jedis.subscribe(jedisPubSub, channel);
 					jedis.quit();

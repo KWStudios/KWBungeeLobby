@@ -31,9 +31,9 @@ public class JedisMessageSender {
 				try {
 					Bukkit.getConsoleSender().sendMessage("Jedis is connecting to the Redis Host!");
 					Jedis jedis = PluginLoader.getJedisPool().getResource();
-					if (password != null) {
+					/*if (password != null) {
 						jedis.auth(password);
-					}
+					}*/
 					Bukkit.getConsoleSender().sendMessage("Jedis is publishing the given Message to the Redis Host!");
 					jedis.publish(channel, message);
 					jedis.quit();
