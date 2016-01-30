@@ -38,7 +38,6 @@ public abstract class JedisMessageListener {
 		this(server, port, null, channel);
 	}
 
-
 	public abstract void taskOnMessageReceive(String channel, String message);
 
 	private JedisPubSub setupSubscriber() {
@@ -79,15 +78,16 @@ public abstract class JedisMessageListener {
 				try {
 					Bukkit.getConsoleSender().sendMessage("Jedis is connecting to the Redis Host!");
 					Jedis jedis = PluginLoader.getJedisPool().getResource();
-					/*if (password != null) {
-						jedis.auth(password);
-					}*/
+					/*
+					 * if (password != null) { jedis.auth(password); }
+					 */
 					Bukkit.getConsoleSender().sendMessage("Jedis is subscribing for a channel at the Redis Host!");
 					jedis.subscribe(jedisPubSub, channel);
-//					jedis.quit();
+					// jedis.quit();
 					// jedis.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+					PluginLoader.getInstance().setupJedisListener();
 					// e.printStackTrace();
 				}
 			}
