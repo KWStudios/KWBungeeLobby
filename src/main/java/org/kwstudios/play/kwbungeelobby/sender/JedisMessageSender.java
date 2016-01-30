@@ -36,7 +36,7 @@ public class JedisMessageSender {
 					}*/
 					Bukkit.getConsoleSender().sendMessage("Jedis is publishing the given Message to the Redis Host!");
 					jedis.publish(channel, message);
-					jedis.quit();
+//					jedis.quit();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
