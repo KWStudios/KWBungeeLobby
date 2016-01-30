@@ -84,7 +84,7 @@ public abstract class JedisMessageListener {
 					}*/
 					Bukkit.getConsoleSender().sendMessage("Jedis is subscribing for a channel at the Redis Host!");
 					jedis.subscribe(jedisPubSub, channel);
-					jedis.quit();
+//					jedis.quit();
 					// jedis.close();
 				} catch (Exception e) {
 					e.printStackTrace();
