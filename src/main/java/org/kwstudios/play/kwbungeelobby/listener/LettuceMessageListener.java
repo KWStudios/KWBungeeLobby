@@ -62,6 +62,7 @@ public abstract class LettuceMessageListener {
 			}
 		});
 
+		Bukkit.getConsoleSender().sendMessage("Subscribing to the given channels!");
 		connection.subscribe(channels);
 	}
 
