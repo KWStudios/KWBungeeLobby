@@ -24,13 +24,13 @@ public abstract class LettuceMessageListener {
 			@Override
 			public void unsubscribed(String channel, long count) {
 				// TODO Auto-generated method stub
-
+				Bukkit.getConsoleSender().sendMessage("Unsubscribed from the channel: " + channel);
 			}
 
 			@Override
 			public void subscribed(String channel, long count) {
 				// TODO Auto-generated method stub
-
+				Bukkit.getConsoleSender().sendMessage("Subscribed to the channel: " + channel);
 			}
 
 			@Override
@@ -48,7 +48,7 @@ public abstract class LettuceMessageListener {
 			@Override
 			public void message(String pattern, String channel, String message) {
 				// TODO Auto-generated method stub
-
+				Bukkit.getConsoleSender().sendMessage("Received a new message with the pattern " + pattern);
 			}
 
 			@Override

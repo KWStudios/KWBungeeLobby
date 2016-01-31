@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -79,10 +80,11 @@ public class PluginLoader extends JavaPlugin {
 
 		RedisURI redisURI;
 		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
+			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort()).build();
+		} else {
+			Bukkit.getConsoleSender().sendMessage("Authenticating with the given password!");
 			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort())
 					.withPassword(jedisValues.getPassword()).build();
-		} else {
-			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort()).build();
 		}
 		redisClient = RedisClient.create(redisURI);
 
@@ -100,7 +102,7 @@ public class PluginLoader extends JavaPlugin {
 		super.onDisable();
 
 		// Jedis stuff
-//		lobbyChannelListener.getJedisPubSub().unsubscribe();
+		// lobbyChannelListener.getJedisPubSub().unsubscribe();
 		jedisPool.destroy();
 
 		PluginDescriptionFile pluginDescriptionFile = getDescription();
