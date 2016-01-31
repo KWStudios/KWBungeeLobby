@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.apache.logging.log4j.core.net.Priority;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.jline.internal.ShutdownHooks.Task;
@@ -55,7 +56,8 @@ public final class EventListener implements Listener {
 								System.out.println("He has the permission!");
 								if (SignData.getWaitingPlayers().containsKey(player)) {
 									// TODO Fancy colors! ~~~~
-									player.sendMessage("You are already waiting for a server!");
+									String message = ChatColor.RED + "You are already waiting for a server!";
+									player.sendMessage(message);
 									return;
 								}
 
@@ -81,13 +83,14 @@ public final class EventListener implements Listener {
 									if (ConfigFactory.getValueOrSetDefault(
 											"settings.maps." + SignCreator.getMapFromSign(sign), "isTeamGame", false,
 											PluginLoader.getInstance().getConfig())) {
-										if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
-												.getValueOrSetDefault(
-														"settings.maps." + SignCreator.getMapFromSign(sign), "teams",
-														1, PluginLoader.getInstance().getConfig()) * ConfigFactory
-												.getValueOrSetDefault(
+										if (requestedServer.getMiniGameResponse()
+												.getCurrentPlayers() <= (ConfigFactory.getValueOrSetDefault(
+														"settings.maps." + SignCreator.getMapFromSign(sign), "teams", 1,
+														PluginLoader.getInstance().getConfig())
+												* ConfigFactory.getValueOrSetDefault(
 														"settings.maps." + SignCreator.getMapFromSign(sign),
-														"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
+														"players-per-team", 1,
+														PluginLoader.getInstance().getConfig()))) {
 											ByteArrayDataOutput out = ByteStreams.newDataOutput();
 											out.writeUTF("Connect");
 											out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
@@ -95,13 +98,16 @@ public final class EventListener implements Listener {
 													out.toByteArray());
 										} else {
 											// TODO Fancy colors! ~~~~
-											player.sendMessage("This server is full!");
+											String message = ChatColor.RED
+													+ "This server is full! VIPs can still join it. " + ChatColor.GOLD
+													+ "/shop";
+											player.sendMessage(message);
 										}
 									} else {
-										if (requestedServer.getMiniGameResponse().getCurrentPlayers() <= (ConfigFactory
-												.getValueOrSetDefault(
-														"settings.maps." + SignCreator.getMapFromSign(sign), "max_players",
-														1, PluginLoader.getInstance().getConfig()))) {
+										if (requestedServer.getMiniGameResponse()
+												.getCurrentPlayers() <= (ConfigFactory.getValueOrSetDefault(
+														"settings.maps." + SignCreator.getMapFromSign(sign),
+														"max_players", 1, PluginLoader.getInstance().getConfig()))) {
 											ByteArrayDataOutput out = ByteStreams.newDataOutput();
 											out.writeUTF("Connect");
 											out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
@@ -109,7 +115,10 @@ public final class EventListener implements Listener {
 													out.toByteArray());
 										} else {
 											// TODO Fancy colors! ~~~~
-											player.sendMessage("This server is full!");
+											String message = ChatColor.RED
+													+ "This server is full! VIPs can still join it. " + ChatColor.GOLD
+													+ "/shop";
+											player.sendMessage(message);
 										}
 									}
 								} else if (!hasRequest) {
@@ -118,7 +127,8 @@ public final class EventListener implements Listener {
 									System.out.println("Everything set up!");
 									MinigameRequests.createRequest(MinigameType.fromString(ConfigFactory
 											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
-													"type", "bedwars", fileConfiguration)), sign);
+													"type", "bedwars", fileConfiguration)),
+											sign);
 
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
 										SignData.getSignPlayerCount().remove(sign);
@@ -158,7 +168,8 @@ public final class EventListener implements Listener {
 															SignData.getWaitingPlayers().remove(del);
 															// TODO Fancy
 															// colors! ~~~~
-															del.sendMessage("The Server you were waiting for timed out.");
+															del.sendMessage(
+																	"The Server you were waiting for timed out.");
 															del.sendMessage("You can now join another game.");
 														}
 													}
@@ -172,10 +183,11 @@ public final class EventListener implements Listener {
 										int i = SignData.getSignPlayerCount().get(sign);
 										if (i >= (ConfigFactory.getValueOrSetDefault(
 												"settings.maps." + SignCreator.getMapFromSign(sign), "teams", 1,
-												PluginLoader.getInstance().getConfig()) * ConfigFactory
-												.getValueOrSetDefault(
+												PluginLoader.getInstance().getConfig())
+												* ConfigFactory.getValueOrSetDefault(
 														"settings.maps." + SignCreator.getMapFromSign(sign),
-														"players-per-team", 1, PluginLoader.getInstance().getConfig()))) {
+														"players-per-team", 1,
+														PluginLoader.getInstance().getConfig()))) {
 											// TODO Fancy colors! ~~~~
 											player.sendMessage("This server is full!");
 										} else {
