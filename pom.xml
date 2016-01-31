@@ -29,6 +29,7 @@
 						<includes>
 							<include>redis.clients:*</include>
 							<include>org.apache.commons:*</include>
+							<include>io.netty:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -38,7 +39,11 @@
 						</relocation>
 						<relocation>
 							<pattern>org.apache.commons</pattern>
-							<shadedPattern>org.kwstudios.play.kwbungeeminigame</shadedPattern>
+							<shadedPattern>org.kwstudios.play.kwbungeelobby</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>io.netty</pattern>
+							<shadedPattern>org.kwstudios.play.kwbungeelobby</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -104,6 +109,21 @@
 			<version>2.8.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>biz.paluch.redis</groupId>
+			<artifactId>lettuce</artifactId>
+			<version>3.4.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId>
+			<version>5.0.0.Alpha2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-common</artifactId>
+			<version>5.0.0.Alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

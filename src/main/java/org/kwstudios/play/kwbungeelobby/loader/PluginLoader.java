@@ -2,6 +2,7 @@ package org.kwstudios.play.kwbungeelobby.loader;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
@@ -13,11 +14,15 @@ import org.kwstudios.play.kwbungeelobby.commands.CommandParser;
 import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
 import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
+import org.kwstudios.play.kwbungeelobby.listener.LettuceMessageListener;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+
+import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisURI;
 
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -31,6 +36,7 @@ public class PluginLoader extends JavaPlugin {
 	private static JedisValues jedisValues = new JedisValues();
 	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
 	private static JedisPool jedisPool;
+	private static RedisClient redisClient = null;
 
 	@Override
 	public void onEnable() {
@@ -53,7 +59,7 @@ public class PluginLoader extends JavaPlugin {
 		SignConfiguration.initSignConfiguration();
 
 		SignCreator.resetAllSigns();
-		
+
 		// TODO Use BungeeCord messaging for Player-save actions
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		new BungeeMessageListener();
@@ -61,14 +67,24 @@ public class PluginLoader extends JavaPlugin {
 		// Jedis Listener Setup
 
 		reloadJedisConfig();
-		
+
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		if(jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
-	        jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
+		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
+			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
 		} else {
-	        jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0, jedisValues.getPassword());
+			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0,
+					jedisValues.getPassword());
 
 		}
+
+		RedisURI redisURI;
+		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
+			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort())
+					.withPassword(jedisValues.getPassword()).build();
+		} else {
+			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort()).build();
+		}
+		redisClient = RedisClient.create(redisURI);
 
 		setupJedisListener();
 
@@ -147,11 +163,32 @@ public class PluginLoader extends JavaPlugin {
 		}
 		channels[jedisValues.getChannelsToListen().length] = jedisValues.getMinigameCreationChannel();
 
-		PluginLoader.lobbyChannelListener = new JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
-				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
+		// PluginLoader.lobbyChannelListener = new
+		// JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
+		// jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
+		// @Override
+		// public synchronized void taskOnMessageReceive(String channel, String
+		// message) {
+		// System.out.println("taskOnMessageReceive is being called!");
+		// if (channel.equals(jedisValues.getMinigameCreationChannel())) {
+		// MinigameRequests.startRequestedServer(message);
+		// } else {
+		// if (PluginLoader.getServerHolders().containsKey(channel)) {
+		// PluginLoader.getServerHolders().get(channel).parseMessage(message);
+		// } else {
+		// MinigameServerHolder parser = new MinigameServerHolder(channel);
+		// parser.parseMessage(message);
+		// PluginLoader.getServerHolders().put(channel, parser);
+		// }
+		// }
+		// }
+		// };
+
+		new LettuceMessageListener(channels) {
+
 			@Override
-			public synchronized void taskOnMessageReceive(String channel, String message) {
-				System.out.println("taskOnMessageReceive is being called!");
+			public void taskOnMessageReceive(String channel, String message) {
+				System.out.println("taskOnMessageReceive is being called by lettuce!");
 				if (channel.equals(jedisValues.getMinigameCreationChannel())) {
 					MinigameRequests.startRequestedServer(message);
 				} else {
@@ -165,6 +202,7 @@ public class PluginLoader extends JavaPlugin {
 				}
 			}
 		};
+
 	}
 
 	private void setupServerHolders() {
@@ -194,10 +232,13 @@ public class PluginLoader extends JavaPlugin {
 	public static PluginLoader getInstance() {
 		return PluginLoader.instance;
 	}
-	
+
 	public static JedisPool getJedisPool() {
 		return jedisPool;
 	}
 
+	public static RedisClient getRedisClient() {
+		return redisClient;
+	}
 
 }
