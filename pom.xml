@@ -30,6 +30,7 @@
 							<include>redis.clients:*</include>
 							<include>org.apache.commons:*</include>
 							<include>io.netty:*</include>
+							<include>biz.paluch.redis:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -43,6 +44,10 @@
 						</relocation>
 						<relocation>
 							<pattern>io.netty</pattern>
+							<shadedPattern>org.kwstudios.play.kwbungeelobby</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>biz.paluch.redis</pattern>
 							<shadedPattern>org.kwstudios.play.kwbungeelobby</shadedPattern>
 						</relocation>
 					</relocations>
