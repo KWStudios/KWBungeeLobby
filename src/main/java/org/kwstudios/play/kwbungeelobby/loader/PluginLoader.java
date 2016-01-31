@@ -165,7 +165,6 @@ public class PluginLoader extends JavaPlugin {
 	public void setupJedisListener() {
 		List<String> channelList = new ArrayList<String>(Arrays.asList(jedisValues.getChannelsToListen()));
 		channelList.add(jedisValues.getMinigameCreationChannel());
-		channelList.add(ConstantHolder.WAKE_UP_CHANNEL);
 		String[] channels = Iterables.toArray(channelList, String.class);
 
 		// PluginLoader.lobbyChannelListener = new
@@ -195,9 +194,6 @@ public class PluginLoader extends JavaPlugin {
 				System.out.println("taskOnMessageReceive is being called by lettuce!");
 				if (channel.equals(jedisValues.getMinigameCreationChannel())) {
 					MinigameRequests.startRequestedServer(message);
-				} else if (channel.equals(ConstantHolder.WAKE_UP_CHANNEL)) {
-					Bukkit.getConsoleSender().sendMessage("The wakeup message was received!");
-					Bukkit.getConsoleSender().sendMessage("Channel: " + channel + " Message: " + message);
 				} else {
 					if (PluginLoader.getServerHolders().containsKey(channel)) {
 						PluginLoader.getServerHolders().get(channel).parseMessage(message);
@@ -209,15 +205,6 @@ public class PluginLoader extends JavaPlugin {
 				}
 			}
 		};
-
-		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(PluginLoader.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				RedisPubSubConnection<String, String> connection = PluginLoader.getRedisClient().connectPubSub();
-				connection.publish(ConstantHolder.WAKE_UP_CHANNEL, "WAKE UP");
-			}
-		}, 0, 600);
-
 	}
 
 	private void setupServerHolders() {
