@@ -2,7 +2,6 @@ package org.kwstudios.play.kwbungeelobby.loader;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -21,9 +20,11 @@ import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.pubsub.RedisPubSubConnection;
 
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -187,12 +188,14 @@ public class PluginLoader extends JavaPlugin {
 		// };
 
 		new LettuceMessageListener(channels) {
-
 			@Override
 			public void taskOnMessageReceive(String channel, String message) {
 				System.out.println("taskOnMessageReceive is being called by lettuce!");
 				if (channel.equals(jedisValues.getMinigameCreationChannel())) {
 					MinigameRequests.startRequestedServer(message);
+				} else if (channel.equals(ConstantHolder.WAKE_UP_CHANNEL)) {
+					Bukkit.getConsoleSender().sendMessage("The wakeup message was received!");
+					Bukkit.getConsoleSender().sendMessage("Channel: " + channel + " Message: " + message);
 				} else {
 					if (PluginLoader.getServerHolders().containsKey(channel)) {
 						PluginLoader.getServerHolders().get(channel).parseMessage(message);
@@ -204,6 +207,14 @@ public class PluginLoader extends JavaPlugin {
 				}
 			}
 		};
+
+		Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(PluginLoader.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				RedisPubSubConnection<String, String> connection = PluginLoader.getRedisClient().connectPubSub();
+				connection.publish(ConstantHolder.WAKE_UP_CHANNEL, "WAKE UP");
+			}
+		}, 0, 600);
 
 	}
 
