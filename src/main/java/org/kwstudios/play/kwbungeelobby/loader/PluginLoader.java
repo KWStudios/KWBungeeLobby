@@ -1,5 +1,7 @@
 package org.kwstudios.play.kwbungeelobby.loader;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -22,6 +24,7 @@ import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 
+import com.google.common.collect.Iterables;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.pubsub.RedisPubSubConnection;
@@ -160,11 +163,10 @@ public class PluginLoader extends JavaPlugin {
 	}
 
 	public void setupJedisListener() {
-		String[] channels = new String[jedisValues.getChannelsToListen().length + 1];
-		for (int i = 0; i < jedisValues.getChannelsToListen().length; i++) {
-			channels[i] = jedisValues.getChannelsToListen()[i];
-		}
-		channels[jedisValues.getChannelsToListen().length] = jedisValues.getMinigameCreationChannel();
+		List<String> channelList = new ArrayList<String>(Arrays.asList(jedisValues.getChannelsToListen()));
+		channelList.add(jedisValues.getMinigameCreationChannel());
+		channelList.add(ConstantHolder.WAKE_UP_CHANNEL);
+		String[] channels = Iterables.toArray(channelList, String.class);
 
 		// PluginLoader.lobbyChannelListener = new
 		// JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
