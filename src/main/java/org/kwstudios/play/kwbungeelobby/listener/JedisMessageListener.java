@@ -72,7 +72,7 @@ public abstract class JedisMessageListener {
 				taskOnMessageReceive(channel, message);
 			}
 		};
-		new Thread(new Runnable() {
+		Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -91,7 +91,7 @@ public abstract class JedisMessageListener {
 					// e.printStackTrace();
 				}
 			}
-		}).start();
+		});
 		return jedisPubSub;
 	}
 
