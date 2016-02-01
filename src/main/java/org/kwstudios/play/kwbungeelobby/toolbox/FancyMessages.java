@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
@@ -20,6 +21,7 @@ public class FancyMessages {
 		player.sendMessage(boringMessage);
 		player.sendMessage("");
 		player.sendMessage(ChatColor.GOLD.toString() + ChatColor.MAGIC.toString() + characters);
+		player.playSound(player.getLocation(), Sound.ARROW_HIT, 1, 0);
 	}
 
 	public static void startRandomMessages(final Player player) {
