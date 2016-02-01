@@ -14,11 +14,12 @@ public class FancyMessages {
 	private static HashMap<Player, BukkitTask> randomMessages = new HashMap<Player, BukkitTask>();
 
 	public static void sendFancyMessage(Player player, String boringMessage) {
-		player.sendMessage(ChatColor.MAGIC.toString() + ChatColor.GOLD.toString() + "aaaaaaaaaaaaaaaa");
+		String characters = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+		player.sendMessage(ChatColor.GOLD.toString() + ChatColor.MAGIC.toString() + characters);
 		player.sendMessage("");
 		player.sendMessage(boringMessage);
 		player.sendMessage("");
-		player.sendMessage(ChatColor.MAGIC.toString() + ChatColor.GOLD.toString() + "aaaaaaaaaaaaaaaa");
+		player.sendMessage(ChatColor.GOLD.toString() + ChatColor.MAGIC.toString() + characters);
 	}
 
 	public static void startRandomMessages(final Player player) {
