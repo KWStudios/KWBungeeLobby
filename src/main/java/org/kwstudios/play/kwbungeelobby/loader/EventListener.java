@@ -200,7 +200,10 @@ public final class EventListener implements Listener {
 														"players-per-team", 1,
 														PluginLoader.getInstance().getConfig()))) {
 											// TODO Fancy colors! ~~~~
-											player.sendMessage("This server is full!");
+											String message = ChatColor.RED
+													+ "This server is full! VIPs can still join it. " + ChatColor.GOLD
+													+ "/shop";
+											player.sendMessage(message);
 										} else {
 											i++;
 											SignData.getSignPlayerCount().remove(sign);

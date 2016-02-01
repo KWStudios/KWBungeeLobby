@@ -21,7 +21,7 @@ public class FancyMessages {
 		player.sendMessage(boringMessage);
 		player.sendMessage("");
 		player.sendMessage(ChatColor.GOLD.toString() + ChatColor.MAGIC.toString() + characters);
-		player.playSound(player.getLocation(), Sound.ARROW_HIT, 1, 0);
+		player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 0);
 	}
 
 	public static void startRandomMessages(final Player player) {
@@ -34,6 +34,7 @@ public class FancyMessages {
 								randomMessages.get(player).cancel();
 							}
 							player.sendMessage(ChatColor.GOLD + LoadingScreenMessages.getInstance().getRandomMessage());
+							player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 0);
 						}
 					}, 64, 64);
 			randomMessages.put(player, task);
