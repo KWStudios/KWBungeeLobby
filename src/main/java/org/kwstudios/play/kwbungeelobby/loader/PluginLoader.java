@@ -9,10 +9,12 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kwstudios.play.kwbungeelobby.commands.CommandParser;
+import org.kwstudios.play.kwbungeelobby.compass.CompassItem;
 import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
 import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
@@ -23,12 +25,10 @@ import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
-import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 
 import com.google.common.collect.Iterables;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisURI;
-import com.lambdaworks.redis.pubsub.RedisPubSubConnection;
 
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -46,6 +46,9 @@ public class PluginLoader extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		// Setup all ConfigurationSerialization Objects
+		ConfigurationSerialization.registerClass(CompassItem.class);
+
 		super.onEnable();
 
 		this.saveDefaultConfig();
@@ -68,7 +71,7 @@ public class PluginLoader extends JavaPlugin {
 
 		// Setup the LoadingScreenMessages singleton
 		LoadingScreenMessages.getInstance();
-		
+
 		// TODO Use BungeeCord messaging for Player-save actions
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		new BungeeMessageListener();

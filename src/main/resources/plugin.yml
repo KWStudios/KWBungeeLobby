@@ -3,3 +3,23 @@ main: org.kwstudios.play.kwbungeelobby.loader.PluginLoader
 version: 1.0.1
 
 commands:
+  kwlobby:
+    description: Main command.
+    aliases: ['kwstudioslobby']
+    permission: kwstudios.lobby
+    permission-message: There are some sort of commands which are not intended to be used by certain players...
+  kwlobby cc:
+    description: Adds a RageMode map with the given name and the maximum player count.
+    aliases: ['kwstudioslobby createcompass']
+    permission: kwstudios.lobby.createcompass
+    permission-message: There are some sort of commands which are not intended to be used by certain players...
+    
+permissions:
+  kwstudios.lobby:
+    description: Gives access to the main command.
+    default: op
+  kwstudios.lobby.*:
+    description: Gives access to all lobby commands.
+    default: op
+    children:
+      kwstudios.lobby.createcompass: true

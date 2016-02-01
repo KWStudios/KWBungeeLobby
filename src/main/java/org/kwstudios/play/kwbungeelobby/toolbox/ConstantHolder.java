@@ -11,4 +11,6 @@ public class ConstantHolder {
 
 	public static final String JEDIS_SERVER = "46.101.230.181";
 
+	public static final String NAVIGATOR_NAME = ChatColor.GREEN + "Navigator";
+
 }

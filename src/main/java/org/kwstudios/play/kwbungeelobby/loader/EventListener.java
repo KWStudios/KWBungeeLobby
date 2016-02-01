@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.logging.log4j.core.net.Priority;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.jline.internal.ShutdownHooks.Task;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,9 +18,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import org.kwstudios.play.kwbungeelobby.compass.CompassManager;
+import org.kwstudios.play.kwbungeelobby.compass.NavigatorItem;
 import org.kwstudios.play.kwbungeelobby.minigames.GetMaps;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServer;
@@ -29,6 +35,7 @@ import org.kwstudios.play.kwbungeelobby.minigames.MinigameType;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.signs.SignData;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 import org.kwstudios.play.kwbungeelobby.toolbox.FancyMessages;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -270,6 +277,48 @@ public final class EventListener implements Listener {
 			SignData.getSignPlayerCount().remove(SignData.getWaitingPlayers().get(event.getPlayer()));
 			SignData.getSignPlayerCount().put(sign, i);
 			SignData.getWaitingPlayers().remove(event.getPlayer());
+		}
+	}
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		ItemStack item = player.getInventory().getItem(0);
+		if (item != null) {
+			if (item.getType() == Material.COMPASS) {
+				if (item.getItemMeta().getDisplayName().equals(ConstantHolder.NAVIGATOR_NAME)) {
+					return;
+				}
+			}
+		}
+
+		ItemStack compass = NavigatorItem.getCompassItem();
+		player.getInventory().setItem(0, compass);
+	}
+
+	@EventHandler
+	public void onCompassRightClick(PlayerInteractEvent event) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			ItemStack item = event.getPlayer().getItemInHand();
+			if (item != null) {
+				if (item.getType() == Material.COMPASS) {
+					if (item.getItemMeta().getDisplayName().equals(ConstantHolder.NAVIGATOR_NAME)) {
+						CompassManager.openCompass(event.getPlayer());
+					}
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onCompassItemClick(InventoryClickEvent event) {
+		Inventory inventory = event.getClickedInventory();
+		if (inventory.equals(CompassManager.getCompass())) {
+			Location loc = CompassManager.getLocation(event.getSlot());
+			if (loc != null) {
+				event.getWhoClicked().teleport(loc);
+			}
+			event.setCancelled(true);
 		}
 	}
 }
