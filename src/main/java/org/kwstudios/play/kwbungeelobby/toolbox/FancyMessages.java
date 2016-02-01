@@ -14,7 +14,7 @@ public class FancyMessages {
 	private static HashMap<Player, BukkitTask> randomMessages = new HashMap<Player, BukkitTask>();
 
 	public static void sendFancyMessage(Player player, String boringMessage) {
-		String characters = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+		String characters = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 		player.sendMessage(ChatColor.GOLD.toString() + ChatColor.MAGIC.toString() + characters);
 		player.sendMessage("");
 		player.sendMessage(boringMessage);
