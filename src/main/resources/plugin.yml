@@ -23,3 +23,4 @@ permissions:
     default: op
     children:
       kwstudios.lobby.createcompass: true
+      kwstudios.lobby.interact: true

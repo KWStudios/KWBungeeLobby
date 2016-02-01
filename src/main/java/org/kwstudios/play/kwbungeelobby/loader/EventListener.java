@@ -19,6 +19,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -40,6 +42,8 @@ import org.kwstudios.play.kwbungeelobby.toolbox.FancyMessages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+
+import net.minecraft.server.v1_8_R3.ItemDoor;
 
 public final class EventListener implements Listener {
 
@@ -260,7 +264,7 @@ public final class EventListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onBlockBreak(BlockBreakEvent event) {
+	public void onSignBreak(BlockBreakEvent event) {
 		if (!event.isCancelled()) {
 			if (event.getBlock().getState() instanceof Sign && !event.isCancelled()) {
 				SignCreator.removeSign((Sign) event.getBlock().getState());
@@ -318,6 +322,29 @@ public final class EventListener implements Listener {
 			if (loc != null) {
 				event.getWhoClicked().teleport(loc);
 			}
+			event.setCancelled(true);
+		}
+	}
+
+	// Remove possibility to interact with the Inventory
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onInventoryInteract(InventoryInteractEvent event) {
+		if (!event.getWhoClicked().hasPermission("kwstudios.lobby.interact")) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onItemDrop(PlayerDropItemEvent event) {
+		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent event) {
+		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
 			event.setCancelled(true);
 		}
 	}
