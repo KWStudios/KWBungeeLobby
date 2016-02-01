@@ -1,6 +1,6 @@
 name: KWBungeeLobby
 main: org.kwstudios.play.kwbungeelobby.loader.PluginLoader
-version: 1.0.1
+version: 1.0.2
 
 commands:
   kwlobby:
