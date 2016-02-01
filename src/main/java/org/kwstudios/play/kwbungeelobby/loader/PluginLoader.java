@@ -17,6 +17,7 @@ import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
 import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.LettuceMessageListener;
+import org.kwstudios.play.kwbungeelobby.minigames.LoadingScreenMessages;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
@@ -65,6 +66,9 @@ public class PluginLoader extends JavaPlugin {
 
 		SignCreator.resetAllSigns();
 
+		// Setup the LoadingScreenMessages singleton
+		LoadingScreenMessages.getInstance();
+		
 		// TODO Use BungeeCord messaging for Player-save actions
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		new BungeeMessageListener();

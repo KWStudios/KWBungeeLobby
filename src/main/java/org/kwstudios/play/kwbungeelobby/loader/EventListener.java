@@ -29,6 +29,7 @@ import org.kwstudios.play.kwbungeelobby.minigames.MinigameType;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.signs.SignData;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeelobby.toolbox.FancyMessages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -49,7 +50,7 @@ public final class EventListener implements Listener {
 				if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 					final Sign sign = (Sign) event.getClickedBlock().getState();
 					if (SignCreator.isJoinSign(sign)) {
-						Player player = event.getPlayer();
+						final Player player = event.getPlayer();
 						if (player.hasPermission("kwbungee.sign.use")) {
 							if (player.hasPermission("kwbungee.sign.use." + SignCreator.getSignRestrictionValue(sign))
 									|| (SignCreator.getSignRestrictionValue(sign) == null)) {
@@ -147,7 +148,11 @@ public final class EventListener implements Listener {
 									SignData.getSignPlayerCount().put(sign, 1);
 									SignData.getWaitingPlayers().put(player, sign);
 									// TODO Fancy colors! ~~~~
-									player.sendMessage("~Starting the server. -- Please wait a few seconds.");
+									String message = ChatColor.DARK_AQUA
+											+ "Starting the Server with some sort of Imagination...";
+									FancyMessages.sendFancyMessage(player, message);
+									FancyMessages.startRandomMessages(player);
+
 									BukkitTask timeout = Bukkit.getServer().getScheduler()
 											.runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
 
@@ -171,6 +176,12 @@ public final class EventListener implements Listener {
 															del.sendMessage(
 																	"The Server you were waiting for timed out.");
 															del.sendMessage("You can now join another game.");
+
+															// Remove random
+															// messages
+															if (FancyMessages.getRandomMessages().containsKey(player)) {
+																FancyMessages.getRandomMessages().get(player).cancel();
+															}
 														}
 													}
 												}
@@ -196,7 +207,10 @@ public final class EventListener implements Listener {
 											SignData.getSignPlayerCount().put(sign, i);
 											SignData.getWaitingPlayers().put(player, sign);
 											// TODO Fancy colors! ~~~~
-											player.sendMessage("Starting the server. -- Please wait a few seconds.");
+											String message = ChatColor.DARK_AQUA
+													+ "Starting the Server with some sort of Imagination...";
+											FancyMessages.sendFancyMessage(player, message);
+											FancyMessages.startRandomMessages(player);
 										}
 									}
 								}
