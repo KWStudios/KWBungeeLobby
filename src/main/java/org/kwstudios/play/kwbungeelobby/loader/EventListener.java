@@ -336,7 +336,7 @@ public final class EventListener implements Listener {
 	// Remove possibility to interact with the Inventory
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInventoryInteract(InventoryInteractEvent event) {
+	public void onInventoryInteract(InventoryClickEvent event) {
 		if (!event.getWhoClicked().hasPermission("kwstudios.lobby.interact")) {
 			event.setCancelled(true);
 		}
