@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -287,6 +288,12 @@ public final class EventListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
+
+		for (int i = 1; i < 40; i++) {
+			player.getInventory().clear(i);
+		}
+		player.setGameMode(GameMode.SURVIVAL);
+
 		ItemStack item = player.getInventory().getItem(0);
 		if (item != null) {
 			if (item.getType() == Material.COMPASS) {
