@@ -324,12 +324,14 @@ public final class EventListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCompassItemClick(InventoryClickEvent event) {
 		Inventory inventory = event.getClickedInventory();
-		if (inventory.equals(CompassManager.getCompass())) {
-			Location loc = CompassManager.getLocation(event.getSlot());
-			if (loc != null) {
-				event.getWhoClicked().teleport(loc);
+		if (inventory != null) {
+			if (inventory.equals(CompassManager.getCompass())) {
+				Location loc = CompassManager.getLocation(event.getSlot());
+				if (loc != null) {
+					event.getWhoClicked().teleport(loc);
+				}
+				event.setCancelled(true);
 			}
-			event.setCancelled(true);
 		}
 	}
 
