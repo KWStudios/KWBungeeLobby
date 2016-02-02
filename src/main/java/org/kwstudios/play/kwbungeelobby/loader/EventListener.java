@@ -40,6 +40,7 @@ import org.kwstudios.play.kwbungeelobby.signs.SignData;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 import org.kwstudios.play.kwbungeelobby.toolbox.FancyMessages;
+import org.kwstudios.play.kwbungeelobby.toolbox.SlotManager;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -290,7 +291,9 @@ public final class EventListener implements Listener {
 		Player player = event.getPlayer();
 
 		for (int i = 1; i < 40; i++) {
-			player.getInventory().clear(i);
+			if (SlotManager.shouldClearSlot(i)) {
+				player.getInventory().clear(i);
+			}
 		}
 		player.setGameMode(GameMode.SURVIVAL);
 
