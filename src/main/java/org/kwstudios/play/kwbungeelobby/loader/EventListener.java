@@ -360,4 +360,16 @@ public final class EventListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
+
+	// Remove join and quit messages
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onJoinMessage(PlayerJoinEvent event) {
+		event.setJoinMessage("");
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onQuitMessage(PlayerQuitEvent event) {
+		event.setQuitMessage("");
+	}
 }
