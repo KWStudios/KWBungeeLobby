@@ -10,10 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.kwstudios.play.kwbungeelobby.commands.CommandParser;
+import org.kwstudios.play.kwbungeelobby.commands.BaseCommand;
+import org.kwstudios.play.kwbungeelobby.commands.ReloadCommand;
 import org.kwstudios.play.kwbungeelobby.compass.CompassItem;
 import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
 import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
@@ -40,9 +40,12 @@ public class PluginLoader extends JavaPlugin {
 
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
-	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
 	private static JedisPool jedisPool;
 	private static RedisClient redisClient = null;
+
+	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
+
+	private static List<BaseCommand> commands = new ArrayList<BaseCommand>();
 
 	@Override
 	public void onEnable() {
@@ -80,30 +83,17 @@ public class PluginLoader extends JavaPlugin {
 
 		reloadJedisConfig();
 
-		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
-			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
-		} else {
-			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0,
-					jedisValues.getPassword());
+		setupJedisPool();
 
-		}
-
-		RedisURI redisURI;
-		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
-			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort()).build();
-		} else {
-			Bukkit.getConsoleSender().sendMessage("Authenticating with the given password!");
-			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort())
-					.withPassword(jedisValues.getPassword()).build();
-		}
-		redisClient = RedisClient.create(redisURI);
+		setupRedisClient();
 
 		setupJedisListener();
 
 		setupServerHolders();
 
 		reloadSignConfig();
+
+		registerCommands();
 
 		saveConfig();
 	}
@@ -125,21 +115,23 @@ public class PluginLoader extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage("You must be a Player!");
+
+		if (!label.equalsIgnoreCase("kwlobby")) {
 			return false;
 		}
 
-		Player player = (Player) sender;
-
-		CommandParser commandParser = new CommandParser(player, command, label, args, getConfig());
-		if (!commandParser.isCommand()) {
-			return false;
+		for (BaseCommand thisCommand : commands) {
+			if (args[0].equalsIgnoreCase(thisCommand.getCommand())) {
+				if (thisCommand.hasPermission(sender)) {
+					thisCommand.execute(sender, new ArrayList<String>(Arrays.asList(args)));
+					return true;
+				}
+			}
 		}
 
 		saveConfig();
 
-		return true;
+		return false;
 	}
 
 	public void reloadJedisConfig() {
@@ -167,6 +159,29 @@ public class PluginLoader extends JavaPlugin {
 		String creationChannel = ConfigFactory.getValueOrSetDefault("settings.minigames.jedis", "creation-channel",
 				"minigame-server-creation", getConfig());
 		jedisValues.setMinigameCreationChannel(creationChannel);
+	}
+
+	public void setupJedisPool() {
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
+			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
+		} else {
+			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0,
+					jedisValues.getPassword());
+
+		}
+	}
+
+	public void setupRedisClient() {
+		RedisURI redisURI;
+		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
+			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort()).build();
+		} else {
+			Bukkit.getConsoleSender().sendMessage("Authenticating with the given password!");
+			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort())
+					.withPassword(jedisValues.getPassword()).build();
+		}
+		redisClient = RedisClient.create(redisURI);
 	}
 
 	public void setupJedisListener() {
@@ -228,6 +243,10 @@ public class PluginLoader extends JavaPlugin {
 		ConfigFactory.getValueOrSetDefault("settings.signs", "second-line", "$STATUS$", getConfig());
 		ConfigFactory.getValueOrSetDefault("settings.signs", "third-line", "$MAP_NAME$ $SIZE$", getConfig());
 		ConfigFactory.getValueOrSetDefault("settings.signs", "fourth-line", "$SLOTS$", getConfig());
+	}
+
+	private void registerCommands() {
+		commands.add(new ReloadCommand(this));
 	}
 
 	public static HashMap<String, MinigameServerHolder> getServerHolders() {
