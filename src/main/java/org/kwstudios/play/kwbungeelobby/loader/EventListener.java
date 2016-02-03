@@ -192,8 +192,8 @@ public final class EventListener implements Listener {
 
 															// Remove random
 															// messages
-															if (FancyMessages.getRandomMessages().containsKey(player)) {
-																FancyMessages.getRandomMessages().get(player).cancel();
+															if (FancyMessages.getRandomMessages().containsKey(del)) {
+																FancyMessages.getRandomMessages().get(del).cancel();
 															}
 														}
 													}
