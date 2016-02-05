@@ -16,9 +16,11 @@ import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-public class BungeeMessageListener implements PluginMessageListener {
+public class KWChannelMessageListener implements PluginMessageListener {
 
-	public BungeeMessageListener() {
+	public KWChannelMessageListener() {
+		PluginLoader.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(PluginLoader.getInstance(),
+				ConstantHolder.KW_CHANNEL_NAME);
 		PluginLoader.getInstance().getServer().getMessenger().registerIncomingPluginChannel(PluginLoader.getInstance(),
 				ConstantHolder.KW_CHANNEL_NAME, this);
 	}

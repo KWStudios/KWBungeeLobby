@@ -16,7 +16,7 @@ import org.kwstudios.play.kwbungeelobby.commands.BaseCommand;
 import org.kwstudios.play.kwbungeelobby.commands.ReloadCommand;
 import org.kwstudios.play.kwbungeelobby.compass.CompassItem;
 import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
-import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
+import org.kwstudios.play.kwbungeelobby.listener.KWChannelMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.LettuceMessageListener;
 import org.kwstudios.play.kwbungeelobby.minigames.LoadingScreenMessages;
@@ -77,7 +77,7 @@ public class PluginLoader extends JavaPlugin {
 
 		// TODO Use BungeeCord messaging for Player-save actions
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-		new BungeeMessageListener();
+		new KWChannelMessageListener();
 
 		// Jedis Listener Setup
 
