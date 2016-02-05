@@ -1,7 +1,9 @@
 package org.kwstudios.play.kwbungeelobby.listener;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -10,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.kwstudios.play.kwbungeelobby.json.PartyRequest;
 import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
+import org.kwstudios.play.kwbungeelobby.minigames.MinigameJoinHandler;
+import org.kwstudios.play.kwbungeelobby.minigames.MinigameServer;
 import org.kwstudios.play.kwbungeelobby.signs.SignData;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 
@@ -56,7 +60,30 @@ public class KWChannelMessageListener implements PluginMessageListener {
 		if (SignData.getQueuedPartyRequests().containsKey(player)) {
 			// TODO Finish joining for the Player and his Party (Or message him
 			// that the Server has not enough free slots)
+			if (response.isRequest()) {
+				return;
+			}
+
+			MinigameServer minigameServer = SignData.getQueuedPartyRequests().get(player);
+			if (response.isLeader()) {
+				MinigameJoinHandler.doPartyJoin(Bukkit.getPlayer(UUID.fromString(response.getUuid())),
+						response.getPlayers_in_party().length, minigameServer);
+			} else {
+				MinigameJoinHandler.doSingleJoin(player, minigameServer);
+			}
 		}
+	}
+
+	public static void sendMessage(String message, Player player) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(stream);
+		try {
+			out.writeUTF(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		player.sendPluginMessage(PluginLoader.getInstance(), ConstantHolder.KW_CHANNEL_NAME, stream.toByteArray());
 	}
 
 }

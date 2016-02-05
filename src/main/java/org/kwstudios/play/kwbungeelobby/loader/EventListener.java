@@ -20,7 +20,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -30,6 +29,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeelobby.compass.CompassManager;
 import org.kwstudios.play.kwbungeelobby.compass.NavigatorItem;
+import org.kwstudios.play.kwbungeelobby.json.PartyRequest;
+import org.kwstudios.play.kwbungeelobby.listener.KWChannelMessageListener;
 import org.kwstudios.play.kwbungeelobby.minigames.GetMaps;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServer;
@@ -42,10 +43,7 @@ import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
 import org.kwstudios.play.kwbungeelobby.toolbox.FancyMessages;
 import org.kwstudios.play.kwbungeelobby.toolbox.SlotManager;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-
-import net.minecraft.server.v1_8_R3.ItemDoor;
+import com.google.gson.Gson;
 
 public final class EventListener implements Listener {
 
@@ -94,47 +92,12 @@ public final class EventListener implements Listener {
 								if (isConnected) {
 									// Server is connected. Send player there if
 									// the server isn't full.
-									if (ConfigFactory.getValueOrSetDefault(
-											"settings.maps." + SignCreator.getMapFromSign(sign), "isTeamGame", false,
-											PluginLoader.getInstance().getConfig())) {
-										if (requestedServer.getMiniGameResponse()
-												.getCurrentPlayers() <= (ConfigFactory.getValueOrSetDefault(
-														"settings.maps." + SignCreator.getMapFromSign(sign), "teams", 1,
-														PluginLoader.getInstance().getConfig())
-												* ConfigFactory.getValueOrSetDefault(
-														"settings.maps." + SignCreator.getMapFromSign(sign),
-														"players-per-team", 1,
-														PluginLoader.getInstance().getConfig()))) {
-											ByteArrayDataOutput out = ByteStreams.newDataOutput();
-											out.writeUTF("Connect");
-											out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
-											player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
-													out.toByteArray());
-										} else {
-											// TODO Fancy colors! ~~~~
-											String message = ChatColor.RED
-													+ "This server is full! VIPs can still join it. " + ChatColor.GOLD
-													+ "/shop";
-											player.sendMessage(message);
-										}
-									} else {
-										if (requestedServer.getMiniGameResponse()
-												.getCurrentPlayers() <= (ConfigFactory.getValueOrSetDefault(
-														"settings.maps." + SignCreator.getMapFromSign(sign),
-														"max_players", 1, PluginLoader.getInstance().getConfig()))) {
-											ByteArrayDataOutput out = ByteStreams.newDataOutput();
-											out.writeUTF("Connect");
-											out.writeUTF(requestedServer.getMiniGameResponse().getServerName());
-											player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord",
-													out.toByteArray());
-										} else {
-											// TODO Fancy colors! ~~~~
-											String message = ChatColor.RED
-													+ "This server is full! VIPs can still join it. " + ChatColor.GOLD
-													+ "/shop";
-											player.sendMessage(message);
-										}
-									}
+									SignData.getQueuedPartyRequests().put(player, requestedServer);
+									Gson gson = new Gson();
+									PartyRequest request = new PartyRequest(player.getName(),
+											player.getUniqueId().toString(), new String[] {}, new String[] {}, false,
+											true);
+									KWChannelMessageListener.sendMessage(gson.toJson(request), player);
 								} else if (!hasRequest) {
 									// Server is not connected and has not been
 									// requested yet.
