@@ -13,4 +13,6 @@ public class ConstantHolder {
 
 	public static final String NAVIGATOR_NAME = ChatColor.GREEN + "Navigator";
 
+	public static final String KW_CHANNEL_NAME = "KWBungee";
+
 }
