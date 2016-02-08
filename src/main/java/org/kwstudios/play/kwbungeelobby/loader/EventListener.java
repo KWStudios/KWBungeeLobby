@@ -249,6 +249,10 @@ public final class EventListener implements Listener {
 			SignData.getSignPlayerCount().put(sign, i);
 			SignData.getWaitingPlayers().remove(event.getPlayer());
 		}
+
+		if (SignData.getQueuedPartyRequests().containsKey(event.getPlayer())) {
+			SignData.getQueuedPartyRequests().remove(event.getPlayer());
+		}
 	}
 
 	@EventHandler

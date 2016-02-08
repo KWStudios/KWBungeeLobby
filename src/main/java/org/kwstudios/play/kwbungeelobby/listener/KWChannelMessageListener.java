@@ -65,6 +65,11 @@ public class KWChannelMessageListener implements PluginMessageListener {
 			if (action == BungeeMessageAction.PARTY) {
 				PartyRequest partyResponse = response.getPartyRequest();
 				Player player = Bukkit.getPlayer(UUID.fromString(partyResponse.getUuid()));
+				if (player == null) {
+					return;
+				} else if (!player.isOnline()) {
+					return;
+				}
 				if (SignData.getQueuedPartyRequests().containsKey(player)) {
 					MinigameServer minigameServer = SignData.getQueuedPartyRequests().get(player);
 					if (partyResponse.isLeader()) {
