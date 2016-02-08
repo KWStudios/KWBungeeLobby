@@ -1,6 +1,8 @@
 package org.kwstudios.play.kwbungeelobby.json;
 
-public class PartyRequest {
+import org.kwstudios.play.kwbungeelobby.enums.BungeeMessageAction;
+
+public class PartyRequest implements IRequest {
 
 	private String player;
 	private String uuid;
@@ -45,8 +47,14 @@ public class PartyRequest {
 		return isLeader;
 	}
 
+	@Override
 	public boolean isRequest() {
 		return isRequest;
+	}
+
+	@Override
+	public BungeeMessageAction getAction() {
+		return BungeeMessageAction.PARTY;
 	}
 
 }
