@@ -29,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeelobby.compass.CompassManager;
 import org.kwstudios.play.kwbungeelobby.compass.NavigatorItem;
+import org.kwstudios.play.kwbungeelobby.json.BungeeRequest;
 import org.kwstudios.play.kwbungeelobby.json.PartyRequest;
 import org.kwstudios.play.kwbungeelobby.listener.KWChannelMessageListener;
 import org.kwstudios.play.kwbungeelobby.minigames.GetMaps;
@@ -97,7 +98,8 @@ public final class EventListener implements Listener {
 									PartyRequest request = new PartyRequest(player.getName(),
 											player.getUniqueId().toString(), new String[] {}, new String[] {}, false,
 											true);
-									KWChannelMessageListener.sendMessage(gson.toJson(request), player);
+									BungeeRequest bungeeRequest = new BungeeRequest(request, null, true);
+									KWChannelMessageListener.sendMessage(gson.toJson(bungeeRequest), player);
 								} else if (!hasRequest) {
 									// Server is not connected and has not been
 									// requested yet.
