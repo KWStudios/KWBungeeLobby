@@ -96,7 +96,7 @@ public class PluginLoader extends JavaPlugin {
 		super.onDisable();
 
 		// Jedis stuff
-		// lobbyChannelListener.getJedisPubSub().unsubscribe();
+		lobbyChannelListener.getJedisPubSub().unsubscribe();
 		jedisPool.destroy();
 
 		PluginDescriptionFile pluginDescriptionFile = getDescription();
