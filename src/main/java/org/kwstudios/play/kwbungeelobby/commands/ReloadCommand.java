@@ -46,7 +46,6 @@ public class ReloadCommand extends BaseCommand {
 			SignCreator.resetAllSigns();
 			getPlugin().reloadJedisConfig();
 			getPlugin().setupJedisPool();
-			getPlugin().setupRedisClient();
 			getPlugin().setupJedisListener();
 			Bukkit.getServer().getScheduler().runTaskAsynchronously(getPlugin(), new Runnable() {
 				@Override

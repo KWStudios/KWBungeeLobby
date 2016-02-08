@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -16,9 +15,8 @@ import org.kwstudios.play.kwbungeelobby.commands.BaseCommand;
 import org.kwstudios.play.kwbungeelobby.commands.ReloadCommand;
 import org.kwstudios.play.kwbungeelobby.compass.CompassItem;
 import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
-import org.kwstudios.play.kwbungeelobby.listener.KWChannelMessageListener;
 import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
-import org.kwstudios.play.kwbungeelobby.listener.LettuceMessageListener;
+import org.kwstudios.play.kwbungeelobby.listener.KWChannelMessageListener;
 import org.kwstudios.play.kwbungeelobby.minigames.LoadingScreenMessages;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
@@ -27,8 +25,6 @@ import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
 
 import com.google.common.collect.Iterables;
-import com.lambdaworks.redis.RedisClient;
-import com.lambdaworks.redis.RedisURI;
 
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -41,7 +37,6 @@ public class PluginLoader extends JavaPlugin {
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
 	private static JedisPool jedisPool;
-	private static RedisClient redisClient = null;
 
 	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
 
@@ -84,8 +79,6 @@ public class PluginLoader extends JavaPlugin {
 		reloadJedisConfig();
 
 		setupJedisPool();
-
-		setupRedisClient();
 
 		setupJedisListener();
 
@@ -172,48 +165,16 @@ public class PluginLoader extends JavaPlugin {
 		}
 	}
 
-	public void setupRedisClient() {
-		RedisURI redisURI;
-		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
-			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort()).build();
-		} else {
-			Bukkit.getConsoleSender().sendMessage("Authenticating with the given password!");
-			redisURI = RedisURI.Builder.redis(jedisValues.getHost(), jedisValues.getPort())
-					.withPassword(jedisValues.getPassword()).build();
-		}
-		redisClient = RedisClient.create(redisURI);
-	}
-
 	public void setupJedisListener() {
 		List<String> channelList = new ArrayList<String>(Arrays.asList(jedisValues.getChannelsToListen()));
 		channelList.add(jedisValues.getMinigameCreationChannel());
 		String[] channels = Iterables.toArray(channelList, String.class);
 
-		// PluginLoader.lobbyChannelListener = new
-		// JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
-		// jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
-		// @Override
-		// public synchronized void taskOnMessageReceive(String channel, String
-		// message) {
-		// System.out.println("taskOnMessageReceive is being called!");
-		// if (channel.equals(jedisValues.getMinigameCreationChannel())) {
-		// MinigameRequests.startRequestedServer(message);
-		// } else {
-		// if (PluginLoader.getServerHolders().containsKey(channel)) {
-		// PluginLoader.getServerHolders().get(channel).parseMessage(message);
-		// } else {
-		// MinigameServerHolder parser = new MinigameServerHolder(channel);
-		// parser.parseMessage(message);
-		// PluginLoader.getServerHolders().put(channel, parser);
-		// }
-		// }
-		// }
-		// };
-
-		new LettuceMessageListener(channels) {
+		PluginLoader.lobbyChannelListener = new JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
+				jedisValues.getPassword(), channels) {
 			@Override
-			public void taskOnMessageReceive(String channel, String message) {
-				System.out.println("taskOnMessageReceive is being called by lettuce!");
+			public synchronized void taskOnMessageReceive(String channel, String message) {
+				System.out.println("taskOnMessageReceive is being called!");
 				if (channel.equals(jedisValues.getMinigameCreationChannel())) {
 					MinigameRequests.startRequestedServer(message);
 				} else {
@@ -261,12 +222,12 @@ public class PluginLoader extends JavaPlugin {
 		return PluginLoader.instance;
 	}
 
-	public static JedisPool getJedisPool() {
-		return jedisPool;
+	public static JedisMessageListener getLobbyChannelListener() {
+		return lobbyChannelListener;
 	}
 
-	public static RedisClient getRedisClient() {
-		return redisClient;
+	public static JedisPool getJedisPool() {
+		return jedisPool;
 	}
 
 }

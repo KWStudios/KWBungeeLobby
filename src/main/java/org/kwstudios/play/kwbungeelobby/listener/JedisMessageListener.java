@@ -44,12 +44,14 @@ public abstract class JedisMessageListener {
 		final JedisPubSub jedisPubSub = new JedisPubSub() {
 			@Override
 			public void onUnsubscribe(String channel, int subscribedChannels) {
-				Bukkit.getConsoleSender().sendMessage("Jedis unsubscribed successfully from the Redis Host!");
+				Bukkit.getConsoleSender()
+						.sendMessage("Jedis unsubscribed successfully from the Redis Host! Channel: " + channel);
 			}
 
 			@Override
 			public void onSubscribe(String channel, int subscribedChannels) {
-				Bukkit.getConsoleSender().sendMessage("Jedis subscribed successfully at the Redis Host!");
+				Bukkit.getConsoleSender()
+						.sendMessage("Jedis subscribed successfully at the Redis Host! Channel: " + channel);
 			}
 
 			@Override
