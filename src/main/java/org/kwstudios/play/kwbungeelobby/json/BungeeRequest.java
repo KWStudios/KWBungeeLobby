@@ -1,6 +1,7 @@
 package org.kwstudios.play.kwbungeelobby.json;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public class BungeeRequest {
 		this.partyRequest = partyRequest;
 		this.friendsRequest = friendsRequest;
 		this.isRequest = isRequest;
+		this.actions = new HashSet<BungeeMessageAction>();
 
 		List<IRequest> params = new ArrayList<IRequest>();
 		params.add(partyRequest);
