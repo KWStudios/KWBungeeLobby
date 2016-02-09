@@ -32,7 +32,9 @@ public class BungeeRequest {
 		params.add(friendsRequest);
 
 		for (IRequest request : params) {
-			actions.add(request.getAction());
+			if (request != null) {
+				actions.add(request.getAction());
+			}
 		}
 	}
 
