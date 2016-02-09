@@ -7,12 +7,13 @@ import java.util.Set;
 
 import org.kwstudios.play.kwbungeelobby.enums.BungeeMessageAction;
 
+import com.google.common.collect.FluentIterable;
 import com.google.gson.annotations.SerializedName;
 
 public class BungeeRequest {
 
 	@SerializedName("actions")
-	private Set<BungeeMessageAction> actions;
+	private BungeeMessageAction[] actions;
 	@SerializedName("party_request")
 	private PartyRequest partyRequest;
 	@SerializedName("friends_request")
@@ -25,24 +26,25 @@ public class BungeeRequest {
 		this.partyRequest = partyRequest;
 		this.friendsRequest = friendsRequest;
 		this.isRequest = isRequest;
-		this.actions = new HashSet<BungeeMessageAction>();
 
 		List<IRequest> params = new ArrayList<IRequest>();
 		params.add(partyRequest);
 		params.add(friendsRequest);
 
+		Set<BungeeMessageAction> actionSet = new HashSet<BungeeMessageAction>();
 		for (IRequest request : params) {
 			if (request != null) {
-				actions.add(request.getAction());
+				actionSet.add(request.getAction());
 			}
 		}
+		this.actions = FluentIterable.from(actionSet).toArray(BungeeMessageAction.class);
 	}
 
 	public BungeeRequest(PartyRequest partyRequest, FriendsRequest friendsRequest) {
 		this(partyRequest, friendsRequest, false);
 	}
 
-	public Set<BungeeMessageAction> getActions() {
+	public BungeeMessageAction[] getActions() {
 		return actions;
 	}
 
