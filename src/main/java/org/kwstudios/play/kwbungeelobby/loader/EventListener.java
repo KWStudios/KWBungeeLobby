@@ -159,6 +159,7 @@ public final class EventListener implements Listener {
 															// messages
 															if (FancyMessages.getRandomMessages().containsKey(del)) {
 																FancyMessages.getRandomMessages().get(del).cancel();
+																FancyMessages.getRandomMessages().remove(del);
 															}
 														}
 													}

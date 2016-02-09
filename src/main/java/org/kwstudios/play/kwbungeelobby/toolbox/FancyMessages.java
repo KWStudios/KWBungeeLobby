@@ -32,6 +32,7 @@ public class FancyMessages {
 						public void run() {
 							if (!player.isOnline()) {
 								randomMessages.get(player).cancel();
+								randomMessages.remove(player);
 							}
 							player.sendMessage(ChatColor.GOLD + LoadingScreenMessages.getInstance().getRandomMessage());
 							player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 0);
