@@ -106,7 +106,7 @@ public final class EventListener implements Listener {
 									System.out.println("Everything set up!");
 									MinigameRequests.createRequest(MinigameType.fromString(ConfigFactory
 											.getValueOrSetDefault("settings.maps." + SignCreator.getMapFromSign(sign),
-													"type", "bedwars", fileConfiguration)),
+													"type", "bedwars", PluginLoader.getInstance().getConfig())),
 											sign);
 
 									if (SignData.getSignPlayerCount().containsKey(sign)) {
