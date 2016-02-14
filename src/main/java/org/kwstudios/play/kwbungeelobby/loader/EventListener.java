@@ -2,6 +2,7 @@ package org.kwstudios.play.kwbungeelobby.loader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -10,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -18,11 +20,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -328,6 +332,25 @@ public final class EventListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
 			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockDamage(BlockDamageEvent event) {
+		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockHover(PlayerMoveEvent event) {
+		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
+			HashSet<Material> set = new HashSet<Material>();
+			set.add(Material.AIR);
+			List<Block> blocks = event.getPlayer().getLineOfSight(set, 100);
+			for (int i = 0; i < blocks.size(); i++) {
+				blocks.remove(i);
+			}
 		}
 	}
 
