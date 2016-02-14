@@ -335,7 +335,8 @@ public final class EventListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	/*
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockDamage(BlockDamageEvent event) {
 		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
 			event.setCancelled(true);
@@ -353,7 +354,7 @@ public final class EventListener implements Listener {
 			}
 		}
 	}
-
+*/
 	// Remove join and quit messages
 
 	@EventHandler(priority = EventPriority.LOWEST)
