@@ -2,7 +2,6 @@ package org.kwstudios.play.kwbungeelobby.loader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -11,16 +10,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -41,6 +40,8 @@ import org.kwstudios.play.kwbungeelobby.minigames.MinigameRequests;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServer;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeelobby.minigames.MinigameType;
+import org.kwstudios.play.kwbungeelobby.packets.WrapperPlayServerSpawnEntity;
+import org.kwstudios.play.kwbungeelobby.packets.WrapperPlayServerSpawnEntity.ObjectTypes;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.signs.SignData;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
@@ -336,25 +337,49 @@ public final class EventListener implements Listener {
 	}
 
 	/*
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onBlockDamage(BlockDamageEvent event) {
-		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
-			event.setCancelled(true);
-		}
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockHover(PlayerMoveEvent event) {
+	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
-			HashSet<Material> set = new HashSet<Material>();
-			set.add(Material.AIR);
-			List<Block> blocks = event.getPlayer().getLineOfSight(set, 100);
-			for (int i = 0; i < blocks.size(); i++) {
-				blocks.remove(i);
+			if (event.hasBlock()) {
+				event.setCancelled(true);
 			}
 		}
 	}
 */
+	/*
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockHover(PlayerMoveEvent event) {
+		if (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
+			// event.getPlayer().getTargetBlock((Set<Material>) null, 100);
+			Location loc = event.getTo();
+
+			//Entity entity = event.getPlayer().getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+			// entity.
+			if (Bukkit.getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
+				WrapperPlayServerSpawnEntity entity = new WrapperPlayServerSpawnEntity();
+				entity.setType(78);
+				entity.setX(loc.getX());
+				entity.setY(loc.getY());
+				entity.setZ(loc.getZ());
+				entity.sendPacket(event.getPlayer());
+			}
+		}
+	}
+	*/
+
+	/*
+	 * @EventHandler(priority = EventPriority.NORMAL) public void
+	 * onBlockDamage(BlockDamageEvent event) { if
+	 * (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
+	 * event.setCancelled(true); } }
+	 * 
+	 * @EventHandler(priority = EventPriority.HIGHEST) public void
+	 * onBlockHover(PlayerMoveEvent event) { if
+	 * (!event.getPlayer().hasPermission("kwstudios.lobby.interact")) {
+	 * HashSet<Material> set = new HashSet<Material>(); set.add(Material.AIR);
+	 * List<Block> blocks = event.getPlayer().getLineOfSight(set, 100); for (int
+	 * i = 0; i < blocks.size(); i++) { blocks.remove(i); } } }
+	 */
 	// Remove join and quit messages
 
 	@EventHandler(priority = EventPriority.LOWEST)

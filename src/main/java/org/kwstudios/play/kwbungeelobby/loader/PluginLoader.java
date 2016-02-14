@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -24,6 +25,8 @@ import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.google.common.collect.Iterables;
 
 import redis.clients.jedis.JedisPool;
@@ -41,6 +44,9 @@ public class PluginLoader extends JavaPlugin {
 	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
 
 	private static List<BaseCommand> commands = new ArrayList<BaseCommand>();
+	
+	//ProtocolLib
+	private static ProtocolManager protocolManager;
 
 	@Override
 	public void onEnable() {
@@ -89,6 +95,12 @@ public class PluginLoader extends JavaPlugin {
 		registerCommands();
 
 		saveConfig();
+		
+		//ProtocolLib
+		if (Bukkit.getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
+			protocolManager = ProtocolLibrary.getProtocolManager();
+		}
+
 	}
 
 	@Override
@@ -228,6 +240,10 @@ public class PluginLoader extends JavaPlugin {
 
 	public static JedisPool getJedisPool() {
 		return jedisPool;
+	}
+
+	public static ProtocolManager getProtocolManager() {
+		return protocolManager;
 	}
 
 }

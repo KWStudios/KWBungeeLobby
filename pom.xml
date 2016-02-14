@@ -29,6 +29,7 @@
 						<excludes>
 							<exclude>org.spigotmc:*</exclude>
 							<exclude>org.bukkit:*</exclude>
+							<exclude>com.comphenix.protocol:*</exclude>
 						</excludes>
 					</artifactSet>
 				</configuration>
@@ -69,6 +70,10 @@
 			<id>craftbukkit-repo</id>
 			<url>http://maven.elmakers.com/repository/</url>
 		</repository>
+		<repository>
+			<id>dmulloy2-repo</id>
+			<url>http://repo.dmulloy2.net/content/groups/public/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -106,6 +111,11 @@
 			<version>2.4.2</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.comphenix.protocol</groupId>
+			<artifactId>ProtocolLib</artifactId>
+			<version>3.6.4</version>
 		</dependency>
 	</dependencies>
 </project>
