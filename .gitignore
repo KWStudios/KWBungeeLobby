@@ -21,3 +21,13 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+
+# macOS specific
+.DS_Store
+
+# eclipse specific
+.project
+.classpath
+
+# IntelliJ IDEA specific
+.idea/
