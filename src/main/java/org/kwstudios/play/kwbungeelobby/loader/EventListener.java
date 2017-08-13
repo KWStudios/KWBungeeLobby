@@ -98,7 +98,7 @@ public final class EventListener implements Listener {
 								if (isConnected) {
 									// Server is connected. Send player there if
 									// the server isn't full.
-									system.out.println("Server is connected, sending player to the server!");
+									System.out.println("Server is connected, sending player to the server!");
 									SignData.getQueuedPartyRequests().put(player, requestedServer);
 									Gson gson = new Gson();
 									PartyRequest request = new PartyRequest(player.getName(),
